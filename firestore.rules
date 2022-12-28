@@ -6,6 +6,11 @@ service cloud.firestore {
       allow write: if isGm()
     }
 
+    match /items/{itemId} {
+      allow read: if isSignedIn();
+      allow write: if isGm()
+    }
+
     match /markets/{marketId} {
       allow read: if isSignedIn();
       allow write: if isGm()

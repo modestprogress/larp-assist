@@ -33,6 +33,7 @@
           <q-route-tab to="/gm/currency" icon="attach_money" label="Currency" />
           <q-route-tab to="/gm/markets" icon="store" label="Markets" />
           <q-route-tab to="/gm/traps" icon="warning" label="Traps" />
+          <q-route-tab to="/gm/items" icon="backpack" label="Items" />
         </q-tabs>
         <router-view />
       </q-page>

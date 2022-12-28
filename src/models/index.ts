@@ -2,6 +2,17 @@ export interface Model {
   id: string;
 }
 
+export interface Listing {
+  itemId: string;
+  available: number;
+  value: number;
+}
+
+export interface Item {
+  name: string;
+  description: string;
+}
+
 export interface File extends Model {
   name: string;
   url: string;
@@ -23,6 +34,7 @@ export interface Market extends Model {
   name: string;
   characterIds: Array<string>;
   currencyId: string;
+  listings?: { [key: string]: Listing };
 }
 
 export interface Currency extends Model {

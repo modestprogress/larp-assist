@@ -11,6 +11,11 @@
     />
 
     <DialogForm ref="dialog" @submit="onSubmit" class="column">
+      <div class="text-center q-mb-md text-h6" v-if="formData.id">
+        <router-link :to="`/gm/markets/${formData.id}`">
+          Edit item quantities
+        </router-link>
+      </div>
       <q-input
         outlined
         label="Name"
