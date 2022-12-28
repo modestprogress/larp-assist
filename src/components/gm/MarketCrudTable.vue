@@ -10,19 +10,27 @@
       @delete="onDelete"
     />
 
-    <DialogForm ref="dialog" @submit="onSubmit">
+    <DialogForm ref="dialog" @submit="onSubmit" class="column">
       <q-input
         outlined
-        label="name"
+        label="Name"
         v-model="formData.name"
+        class="q-mb-md"
         :rules="[$rules.required()]"
+        hint="Name to show for the currency"
       />
 
-      <CurrencySelect label="Currency" v-model="formData.currencyId" />
+      <CurrencySelect
+        label="Currency"
+        class="q-mb-md"
+        v-model="formData.currencyId"
+        hint="The currency the market uses"
+      />
 
       <CharacterMultiSelect
         label="Characters"
         v-model="formData.characterIds"
+        hint="Who can see and shop at the markets"
       />
     </DialogForm>
   </div>
