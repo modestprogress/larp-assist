@@ -67,10 +67,11 @@ const onExport = () => {
         .filter((col) => col.label)
         .map((col) => {
           const label = col.label;
+          const fieldValue = row[col.field || col.name];
           const value =
-            typeof col.field === 'function'
-              ? col.field(row)
-              : row[col.field || col.name];
+            typeof col.format === 'function'
+              ? col.format(fieldValue, row)
+              : fieldValue;
 
           return [label, value];
         })
@@ -79,6 +80,7 @@ const onExport = () => {
   console.dir(tableContents);
 
   const options = {
+    filename: props.title + ' ' + new Date(),
     fieldSeparator: ',',
     quoteStrings: '"',
     decimalSeparator: '.',

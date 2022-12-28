@@ -7,7 +7,7 @@
 
 <script setup lang="ts">
 // Vue
-import { computed, provide } from 'vue';
+import { computed } from 'vue';
 
 // Ours - Stores
 import { useMotdsStore } from 'stores/motds';

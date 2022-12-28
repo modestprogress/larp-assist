@@ -1,6 +1,6 @@
-import fs from 'fs'
+import fs from 'fs';
 
-console.log('hi')
+console.log('hi');
 
 function makeTest(component: string) {
   return `import { installQuasar } from '@quasar/quasar-app-extension-testing-unit-vitest';
@@ -16,7 +16,7 @@ describe('${component} Component', () => {
       props: {},
     });
   });
-});`
+});`;
 }
 
 [
@@ -39,8 +39,10 @@ describe('${component} Component', () => {
   'TitledCard',
   'TransactionCrudTable',
   'TransactionDialogForm',
-].forEach(async component => {
-  const path = `test/vitest/__tests__/${component}.test.ts`
-  const test = makeTest(component)
-  await fs.writeFile(path, test, { flag: 'wx' }, () => {23});
-})
+].forEach(async (component) => {
+  const path = `test/vitest/__tests__/${component}.test.ts`;
+  const test = makeTest(component);
+  await fs.writeFile(path, test, { flag: 'wx' }, () => {
+    23;
+  });
+});
