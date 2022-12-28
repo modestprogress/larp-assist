@@ -1,32 +1,33 @@
 <template>
   <q-select
-      clearable
-      filled
-      map-options
-      emit-value
-      @input="$emit('update:modelValue', $event.target.value)"
-      :options="characterNameOptions"
-      :label="label" />
+    clearable
+    filled
+    map-options
+    emit-value
+    @input="$emit('update:modelValue', $event.target.value)"
+    :options="characterNameOptions"
+    :label="label"
+  />
 </template>
 
 <script setup lang="ts">
-import { computed, inject } from 'vue'
+import { computed, inject } from 'vue';
 
 defineProps({
-  label: String
-})
+  label: String,
+});
 
-const characterNames = inject('characterNames')
+const characterNames = inject('characterNames');
 
 const characterNameOptions = computed(() => {
-  const options = []
+  const options = [];
   characterNames.value.forEach((name, characterId) =>
     options.push({
       label: name,
-      value: characterId
+      value: characterId,
     })
-  )
+  );
 
-  return options
-})
+  return options;
+});
 </script>

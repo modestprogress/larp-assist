@@ -1,9 +1,6 @@
 // Pinia data store
 import { defineStore } from 'pinia';
 
-// Vue
-import { ref } from 'vue';
-
 // Ours
 import { useFirestoreCollection } from 'stores/firestore';
 import { Currency } from 'src/models';
