@@ -50,7 +50,7 @@
 
 <script setup lang="ts">
 // Vue
-import { computed, ref, inject, watch } from 'vue';
+import { computed, ref, inject } from 'vue';
 
 // Ours - model
 import { SectionType, sortSections } from 'src/models/books';

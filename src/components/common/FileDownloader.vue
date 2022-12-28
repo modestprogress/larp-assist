@@ -28,21 +28,24 @@ const fileCode = ref('');
 const download = () => {
   const storage = getStorage();
   const fileRef = storageRef(storage, 'public').child(fileCode.value + '.pdf');
-  getDownloadURL(fileRef).then((url: string) => {
-    console.log(url);
-  }).catch((error) => {
-    const messages = new Map([
+  getDownloadURL(fileRef)
+    .then((url: string) => {
+      console.log(url);
+    })
+    .catch((error) => {
+      const messages = new Map([
         ['storage/object-not-found', 'File not found'],
         ['storage/unauthorized', 'Unauthorized'],
         ['storage/canceled', 'Canceled'],
-        ['storage/unknown', 'Unknown error']
-    ])
+        ['storage/unknown', 'Unknown error'],
+      ]);
 
-    let msg = messages.get(error.code) || error.code
-    $q.notify({
+      let msg = messages.get(error.code) || error.code;
+      $q.notify({
         type: 'negative',
         message: msg,
-        icon: 'nocloud_download'
+        icon: 'nocloud_download',
+      });
     });
-  })
-}
+};
+</script>
