@@ -44,10 +44,34 @@ const routes: RouteRecordRaw[] = [
         path: 'gm',
         component: () => import('layouts/GMLayout.vue'),
         children: [
-          { path: '', component: () => import('pages/gm/IndexPage.vue') },
+          { path: '', redirect: '/gm/characters' },
           {
             path: 'books/:id',
             component: () => import('pages/gm/BookPage.vue'),
+          },
+          {
+            path: 'books',
+            component: () => import('pages/gm/BooksPage.vue'),
+          },
+          {
+            path: 'divinations',
+            component: () => import('pages/gm/DivinationsPage.vue'),
+          },
+          {
+            path: 'characters',
+            component: () => import('pages/gm/CharactersPage.vue'),
+          },
+          {
+            path: 'currency',
+            component: () => import('pages/gm/CurrenciesPage.vue'),
+          },
+          {
+            path: 'markets',
+            component: () => import('pages/gm/MarketsPage.vue'),
+          },
+          {
+            path: 'traps',
+            component: () => import('pages/gm/TrapsPage.vue'),
           },
         ],
       },

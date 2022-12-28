@@ -13,9 +13,27 @@
         <q-btn size="md" label="Logout" @click="onSignOut" color="secondary" />
       </q-toolbar>
     </q-header>
-
     <q-page-container>
       <q-page padding>
+        <q-tabs
+          dense
+          class="text-grey"
+          active-color="primary"
+          indicator-color="primary"
+          align="justify"
+          narrow-indicator
+        >
+          <q-route-tab to="/gm/books" icon="book" label="Books" />
+          <q-route-tab
+            to="/gm/divinations"
+            icon="visibility"
+            label="Divinations"
+          />
+          <q-route-tab to="/gm/characters" icon="person" label="Characters" />
+          <q-route-tab to="/gm/currency" icon="attach_money" label="Currency" />
+          <q-route-tab to="/gm/markets" icon="store" label="Markets" />
+          <q-route-tab to="/gm/traps" icon="warning" label="Traps" />
+        </q-tabs>
         <router-view />
       </q-page>
     </q-page-container>
