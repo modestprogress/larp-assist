@@ -7,8 +7,13 @@
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn color="primary" label="Submit" @submit="onSubmit" type="submit"/>
-            <q-btn color="primary" label="Cancel" @click="onCancelClick" />
+          <q-btn
+            color="primary"
+            label="Submit"
+            @submit="onSubmit"
+            type="submit"
+          />
+          <q-btn color="primary" label="Cancel" @click="onCancelClick" />
         </q-card-actions>
       </q-form>
     </q-card>
@@ -16,33 +21,32 @@
 </template>
 
 <script lang="ts">
-
 export default {
-  emits: [ 'submit', 'hide' ],
+  emits: ['submit', 'hide'],
 
   expose: ['show'],
 
   methods: {
-    show () {
-      this.$refs.dialog.show()
+    show() {
+      this.$refs.dialog.show();
     },
 
-    hide () {
-      this.$refs.dialog.hide()
+    hide() {
+      this.$refs.dialog.hide();
     },
 
     onDialogHide() {
-      this.$emit('hide')
+      this.$emit('hide');
     },
 
     onCancelClick() {
-      this.hide()
+      this.hide();
     },
 
     onSubmit() {
-      this.$emit('submit')
-      this.hide()
+      this.$emit('submit');
+      this.hide();
     },
   },
-}
+};
 </script>

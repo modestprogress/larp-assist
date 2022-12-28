@@ -1,9 +1,9 @@
 // Pinia data store
-import { defineStore } from 'pinia'
+import { defineStore } from 'pinia';
 
 // Ours
-import { useFirestoreCollection } from 'stores/firestore'
-import { Trap } from 'src/models'
+import { useFirestoreCollection } from 'stores/firestore';
+import { Trap } from 'src/models';
 
 export const useTrapsStore = defineStore('traps', () => {
   return {
@@ -14,5 +14,5 @@ export const useTrapsStore = defineStore('traps', () => {
         id: id,
       }),
     }),
-  }
-})
+  };
+});

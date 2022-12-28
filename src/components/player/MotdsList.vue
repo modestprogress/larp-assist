@@ -8,6 +8,6 @@
 
 <script lang="ts">
 export default {
-  props: ['motds']
-}
+  props: ['motds'],
+};
 </script>

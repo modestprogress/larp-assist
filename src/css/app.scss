@@ -1,11 +1,11 @@
 // app global css in SCSS form
 @font-face {
-    font-family: wizardFont;
-    src: url(/fonts/harryp/HARRYP__.TTF);
+  font-family: wizardFont;
+  src: url(/fonts/harryp/HARRYP__.TTF);
 }
 
 .text-wizard {
-    font-family: wizardFont;
+  font-family: wizardFont;
 }
 
 .bg-blur {
@@ -13,7 +13,8 @@
   background: transparent;
 }
 
-.text-link, .text-link:visited  {
+.text-link,
+.text-link:visited {
   color: $primary;
   border-bottom: 1px solid $primary;
   text-decoration: none;

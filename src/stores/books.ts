@@ -1,9 +1,9 @@
 // Pinia data store
-import { defineStore } from 'pinia'
+import { defineStore } from 'pinia';
 
 // Ours
-import { useFirestoreCollection } from 'stores/firestore'
-import { Book } from 'src/models/books'
+import { useFirestoreCollection } from 'stores/firestore';
+import { Book } from 'src/models/books';
 
 export const useBooksStore = defineStore('books', () => {
   return {
@@ -16,7 +16,7 @@ export const useBooksStore = defineStore('books', () => {
         description: data.description,
         chapters: data.chapters || [],
         id: id,
-      })
-    })
-  }
-})
+      }),
+    }),
+  };
+});

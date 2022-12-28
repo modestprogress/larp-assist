@@ -21,7 +21,7 @@ const routes: RouteRecordRaw[] = [
         path: 'player',
         component: () => import('layouts/PlayerLayout.vue'),
         children: [
-          { path: '', component: () => import('pages/player/IndexPage.vue') },
+          { path: '', redirect: '/player/motds' },
           {
             path: 'divinations',
             component: () => import('pages/player/DivinationsPage.vue'),
