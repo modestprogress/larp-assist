@@ -10,12 +10,9 @@ export const useTransactionsStore = defineStore('transactions', () => {
     ...useFirestoreCollection<Transaction>('transactions', {
       map: (id, data) => ({
         amount: data.amount,
-        toCharacterId: data.toCharacterId || '',
-        fromCharacterId: data.fromCharacterId || '',
-        currency: data.currency,
+        characterId: data.characterId,
+        currencyId: data.currencyId,
         notes: data.notes,
-        createdAtEpoch: data.createdAtEpoch,
-        createdByCharacterId: data.createdByCharacterId,
         id: id,
       }),
     }),

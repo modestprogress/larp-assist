@@ -69,18 +69,6 @@ service cloud.firestore {
       return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.gm
     }
 
-    function isResourceUser() {
-      return resource.data.userId in ["", request.auth.uid]
-    }
-
-    function isAnyResourceUserOrGm() {
-      return isGm() || request.auth.uid in  resource.data.userId
-    }
-
-    function isResourceUserOrGm() {
-      return isGm() || isResourceUser()
-    }
-
     function isUser(userId) {
       return request.auth.uid == userId;
     }

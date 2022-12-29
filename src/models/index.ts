@@ -1,5 +1,7 @@
 export interface Model {
   id: string;
+  createdAtEpoch?: number;
+  updatedAtEpoch?: number;
 }
 
 export interface Listing {
@@ -59,10 +61,7 @@ export interface UserPreference {
 
 export interface Transaction extends Model {
   amount: number;
-  toCharacterId: string;
-  fromCharacterId: string;
-  currency: string;
-  createdByCharacterId: string;
-  createdAtEpoch: number;
+  currencyId: string;
+  characterId: string;
   notes: string;
 }
