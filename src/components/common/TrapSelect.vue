@@ -23,7 +23,7 @@ const trapOptions = computed(() => {
   const options = [];
   trapsById.value.forEach((trap, trapId) =>
     options.push({
-      label: trap.content,
+      label: trap.name,
       value: trapId,
     })
   );
