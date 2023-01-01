@@ -4,8 +4,9 @@
     filled
     map-options
     emit-value
+    :hint="hint"
     @input="$emit('update:modelValue', $event.target.value)"
-    :options="trapOptions"
+    :options="itemNameOptions"
     :label="label"
   />
 </template>
@@ -15,19 +16,17 @@ import { computed, inject } from 'vue';
 
 defineProps({
   label: String,
+  hint: {
+    type: String,
+    default: '',
+  },
 });
 
-const trapsById = inject('trapsById');
-
-const trapOptions = computed(() => {
-  const options = [];
-  trapsById.value.forEach((trap, trapId) =>
-    options.push({
-      label: trap.name,
-      value: trapId,
-    })
-  );
-
-  return options;
+const items = inject('items');
+const itemNameOptions = computed(() => {
+  return items.value.map(({ id, name }) => ({
+    label: name,
+    value: id,
+  }));
 });
 </script>

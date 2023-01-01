@@ -11,27 +11,34 @@
     />
 
     <DialogForm ref="dialog" @submit="onSubmit">
+      <CharacterSelect
+        label="Character"
+        v-model="formData.characterId"
+        class="q-mb-md"
+        hint="Character's balance to be effected"
+      />
+      <CurrencySelect
+        label="Currency"
+        v-model="formData.currencyId"
+        class="q-mb-md"
+        hint="Currency of transaction"
+        :rules="[$rules.required()]"
+      />
       <q-input
         outlined
         type="number"
         label="Amount"
         v-model="formData.amount"
+        class="q-mb-md"
+        hint="Amount of currency transaction is for"
         :rules="[$rules.required()]"
       />
-      <q-input
-        outlined
-        label="Currency"
-        v-model="formData.currency"
-        :rules="[$rules.required()]"
-      />
-      <CharacterSelect label="To" v-model="formData.toCharacterId" />
-      <CharacterSelect label="From" v-model="formData.fromCharacterId" />
       <q-input
         outlined
         type="textarea"
         label="Note"
         v-model="formData.notes"
-        :rules="[$rules.required()]"
+        hint="Notes to show user for this transaction"
       />
     </DialogForm>
   </div>
@@ -48,44 +55,31 @@ import { useTransactionsStore } from 'stores/transactions';
 import CrudTable from 'components/common/CrudTable.vue';
 import DialogForm from 'components/common/DialogForm.vue';
 import CharacterSelect from 'components/common/CharacterSelect.vue';
+import CurrencySelect from 'components/common/CurrencySelect.vue';
 
 const columns = [
   {
-    name: 'toCharacterName',
-    field: 'toCharacterName',
-    label: 'To',
+    name: 'characterName',
+    field: 'characterName',
+    label: 'Character',
     align: 'left',
     sortable: true,
   },
   {
-    name: 'fromCharacterName',
-    field: 'fromCharacterName',
-    label: 'From',
-    align: 'left',
-    sortable: true,
-  },
-  {
-    name: 'amount',
-    field: 'amount',
-    label: 'Amount',
-    align: 'left',
-    sortable: true,
-  },
-  {
-    name: 'currency',
-    field: 'currency',
+    name: 'currencyName',
+    field: 'currencyName',
     label: 'Currency',
     align: 'left',
     sortable: true,
   },
-  {
-    name: 'notes',
-    field: 'notes',
-    label: 'Notes',
+  ...['amount', 'notes'].map((name) => ({
+    name: name,
+    field: name,
+    label: name[0].toUpperCase() + name.slice(1),
+    required: true,
     align: 'left',
     sortable: true,
-  },
-  { name: 'actions', label: 'Action' },
+  })),
 ];
 
 // The data backing the form
@@ -95,8 +89,14 @@ const formData = ref();
 const dialog = ref(null);
 
 // The callback when you click edit or add
-const onEdit = (transaction) => {
-  formData.value = { ...transaction };
+const onEdit = (transaction = {}) => {
+  formData.value = {
+    id: transaction.id,
+    amount: transaction.amount || 0,
+    notes: transaction.notes || '',
+    currencyId: transaction.currencyId,
+    characterId: transaction.characterId,
+  };
   dialog.value.show();
 };
 
@@ -108,12 +108,13 @@ const onSubmit = () => transactionsStore.createOrUpdate(formData.value);
 
 // Character names provided upstream
 const characterNames = inject('characterNames');
+const currencyNames = inject('currencyNames');
 
 // The rows we're displaying. We add in the character names.
 const transactions = computed(() =>
   transactionsStore.items.map((transaction) => ({
-    toCharacterName: characterNames.value.get(transaction.toCharacterId),
-    fromCharacterName: characterNames.value.get(transaction.fromCharacterId),
+    characterName: characterNames.value.get(transaction.characterId),
+    currencyName: currencyNames.value.get(transaction.currencyId),
     ...transaction,
   }))
 );

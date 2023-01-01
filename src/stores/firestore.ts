@@ -24,13 +24,12 @@ export const useFirestoreCollection = <T extends Model>(
     after?: (models: T[]) => void;
   }
 ) => {
+  const db = getFirestore();
   const loading = ref(false);
   const items = ref<T[]>([]) as Ref<T[]>;
   const itemsById = ref<Map<string, T>>(new Map()) as Ref<Map<string, T>>;
   const refresh = () => {
     loading.value = true;
-
-    const db = getFirestore();
 
     const ref = collection(db, collectionPath);
 
@@ -61,8 +60,8 @@ export const useFirestoreCollection = <T extends Model>(
 
   const update = (id: string, item: object) => {
     loading.value = true;
+    item.updatedAtEpoch = Date.now();
 
-    const db = getFirestore();
     const docRef = doc(db, `${collectionPath}/${id}`);
 
     return updateDoc(docRef, item).then(refresh);
@@ -70,8 +69,7 @@ export const useFirestoreCollection = <T extends Model>(
 
   const create = (item: object) => {
     loading.value = true;
-
-    const db = getFirestore();
+    item.createdAtEpoch = Date.now();
 
     return addDoc(collection(db, collectionPath), { ...item }).then(refresh);
   };
@@ -94,7 +92,6 @@ export const useFirestoreCollection = <T extends Model>(
     delete(id: string) {
       loading.value = true;
 
-      const db = getFirestore();
       const docRef = doc(db, `${collectionPath}/${id}`);
 
       return deleteDoc(docRef).then(refresh);
