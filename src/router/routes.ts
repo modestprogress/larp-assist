@@ -50,6 +50,10 @@ const routes: RouteRecordRaw[] = [
             component: () => import('pages/gm/BookPage.vue'),
           },
           {
+            path: 'markets/:id',
+            component: () => import('pages/gm/MarketPage.vue'),
+          },
+          {
             path: 'books',
             component: () => import('pages/gm/BooksPage.vue'),
           },
@@ -72,6 +76,14 @@ const routes: RouteRecordRaw[] = [
           {
             path: 'traps',
             component: () => import('pages/gm/TrapsPage.vue'),
+          },
+          {
+            path: 'items',
+            component: () => import('pages/gm/ItemsPage.vue'),
+          },
+          {
+            path: 'transactions',
+            component: () => import('pages/gm/TransactionsPage.vue'),
           },
         ],
       },

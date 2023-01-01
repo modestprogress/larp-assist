@@ -1,5 +1,18 @@
 export interface Model {
   id: string;
+  createdAtEpoch?: number;
+  updatedAtEpoch?: number;
+}
+
+export interface Listing {
+  itemId: string;
+  available: number;
+  value: number;
+}
+
+export interface Item {
+  name: string;
+  description: string;
 }
 
 export interface File extends Model {
@@ -23,6 +36,7 @@ export interface Market extends Model {
   name: string;
   characterIds: Array<string>;
   currencyId: string;
+  listings?: { [key: string]: Listing };
 }
 
 export interface Currency extends Model {
@@ -47,10 +61,7 @@ export interface UserPreference {
 
 export interface Transaction extends Model {
   amount: number;
-  toCharacterId: string;
-  fromCharacterId: string;
-  currency: string;
-  createdByCharacterId: string;
-  createdAtEpoch: number;
+  currencyId: string;
+  characterId: string;
   notes: string;
 }

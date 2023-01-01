@@ -12,9 +12,9 @@
 
     <DialogForm ref="dialog" @submit="onSubmit">
       <div class="text-center q-mb-md text-h6" v-if="formData.id">
-        <router-link :to="`/gm/books/${formData.id}`"
-          >Edit chapters</router-link
-        >
+        <router-link :to="`/gm/books/${formData.id}`">
+          Edit chapters
+        </router-link>
       </div>
 
       <q-input

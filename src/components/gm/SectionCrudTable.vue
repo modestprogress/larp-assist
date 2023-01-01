@@ -71,8 +71,7 @@ const trapsById = inject('trapsById');
 
 const displayText = (section: Section) => {
   if (section.type == SectionType.Trap) {
-    const trapName = trapsById.value.get(section.trapId).name;
-    return `trap[${trapName}]`;
+    return trapsById.value.get(section.trapId).name;
   }
 
   return section.text;
