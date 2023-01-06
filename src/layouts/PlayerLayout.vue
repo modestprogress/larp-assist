@@ -1,39 +1,29 @@
 <template>
-  <q-layout class="bg-image" view="lHh lpr lFf">
-    <q-page-container>
-      <q-page padding class="page q-mx-auto">
-        <div class="text-h2 q-mb-lg heading text-wizard text-center">
-          The journal of {{ name }}
-        </div>
-        <q-tabs shrink stretch class="q-mb-md">
-          <q-route-tab to="/player/motds" icon="email" label="Missives" />
-          <q-route-tab
-            to="/player/divinations"
-            icon="visibility"
-            label="Divinations"
-          />
-          <q-route-tab to="/player/library" icon="book" label="Library" />
-          <q-route-tab
-            to="/player/currency"
-            icon="attach_money"
-            label="Currency"
-          />
-        </q-tabs>
+  <div class="text-h2 q-mb-lg heading text-wizard text-center">
+    The journal of {{ name }}
+  </div>
+  <q-tabs shrink stretch class="q-mb-md">
+    <q-route-tab to="/player/motds" icon="email" label="Missives" />
+    <q-route-tab
+      to="/player/divinations"
+      icon="visibility"
+      label="Divinations"
+    />
+    <q-route-tab to="/player/library" icon="book" label="Library" />
+    <q-route-tab to="/player/currency" icon="attach_money" label="Currency" />
+  </q-tabs>
 
-        <q-btn
-          size="md"
-          label="Close Journal"
-          @click="onSignOut"
-          class="logout-top-right"
-          color="secondary"
-        />
-        <router-view />
-      </q-page>
-    </q-page-container>
-  </q-layout>
+  <q-btn
+    size="md"
+    label="Close Journal"
+    @click="onSignOut"
+    class="logout-top-right"
+    color="secondary"
+  />
+  <router-view />
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 .bg-image {
   background-image: url(/images/background.jpg);
   background-size: auto;
@@ -43,10 +33,6 @@
   position: fixed;
   top: 0;
   right: 0;
-}
-
-.page {
-  max-width: 768px;
 }
 
 .q-tab__content .q-icon {
