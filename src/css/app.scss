@@ -1,21 +1,29 @@
 // app global css in SCSS form
 @font-face {
-  font-family: wizardFont;
-  src: url(/fonts/harryp/HARRYP__.TTF);
+    font-family: wizardFont;
+    src: url(/fonts/harryp/HARRYP__.TTF);
+}
+
+$clr-bg: hsl(359, 100%, 13%);
+$clr-dark: #111;
+
+body {
+    color: $white-warm;
+    background: linear-gradient(0deg, $clr-bg, $clr-dark);
 }
 
 .text-wizard {
-  font-family: wizardFont;
+    font-family: wizardFont;
 }
 
 .bg-blur {
-  backdrop-filter: blur(6px);
-  background: transparent;
+    backdrop-filter: blur(6px);
+    background: transparent;
 }
 
 .text-link,
 .text-link:visited {
-  color: $primary;
-  border-bottom: 1px solid $primary;
-  text-decoration: none;
+    color: $primary;
+    border-bottom: 1px solid $primary;
+    text-decoration: none;
 }

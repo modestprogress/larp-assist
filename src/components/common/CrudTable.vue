@@ -1,9 +1,10 @@
 <template>
   <div class="q-pa-md">
     <q-table
+      dark
+      class="bg-transparent"
       :rows="rows || []"
       :columns="columns"
-      :loading="loading"
       wrap-cells
       row-key="id"
       binary-state-sort

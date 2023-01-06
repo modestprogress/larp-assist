@@ -15,6 +15,17 @@ export interface Item {
   description: string;
 }
 
+export interface Listing {
+  itemId: string;
+  available: number;
+  value: number;
+}
+
+export interface Item {
+  name: string;
+  description: string;
+}
+
 export interface File extends Model {
   name: string;
   url: string;
