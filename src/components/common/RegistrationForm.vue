@@ -2,6 +2,7 @@
   <q-form @submit="register" class="full-width">
     <q-input
       outlined
+      dark
       class="q-mb-md"
       type="text"
       label="Character Code"
@@ -10,6 +11,7 @@
     />
     <q-input
       outlined
+      dark
       class="q-mb-md"
       type="email"
       label="Email"
@@ -18,6 +20,7 @@
     />
     <q-input
       outlined
+      dark
       class="q-mb-md"
       type="password"
       label="Password"
@@ -26,6 +29,7 @@
     />
     <q-input
       outlined
+      dark
       class="q-mb-md"
       type="password"
       label="Confirm Password"
