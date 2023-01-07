@@ -12,7 +12,7 @@
 
     <DialogForm ref="dialog" @submit="onSubmit" class="column">
       <div class="text-center q-mb-md text-h6" v-if="formData.id">
-        <router-link :to="`/gm/markets/${formData.id}`">
+        <router-link class="text-primary" :to="`/gm/markets/${formData.id}`">
           Edit item quantities
         </router-link>
       </div>
@@ -86,8 +86,13 @@ const formData = ref();
 const dialog = ref(null);
 
 // The callback when you click edit or add
-const onEdit = (market) => {
-  formData.value = { ...market };
+const onEdit = (market = {}) => {
+  formData.value = {
+    id: market.id,
+    name: market.name,
+    characterIds: market.characterIds || [],
+    currencyId: market.currencyId || '',
+  };
   dialog.value.show();
 };
 

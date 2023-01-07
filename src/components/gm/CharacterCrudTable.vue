@@ -17,6 +17,8 @@
         v-model="formData.name"
         :autofocus="true"
         :rules="[$rules.required()]"
+        class="q-mb-md"
+        hint="The name character's name"
       />
       <q-input
         outlined
@@ -24,12 +26,16 @@
         v-model="formData.code"
         :autofocus="true"
         :rules="[$rules.required()]"
+        class="q-mb-md"
+        hint="Provided at user registration to associate user with character"
       />
       <q-input
         outlined
         label="Notes"
         type="textarea"
         v-model="formData.notes"
+        class="q-mb-md"
+        hint="GM-only notes"
       />
     </DialogForm>
   </div>

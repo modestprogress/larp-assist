@@ -16,11 +16,15 @@
         label="name"
         v-model="formData.name"
         :rules="[$rules.required()]"
+        class="q-mb-md"
+        hint="How the currency is referred  to"
       />
 
       <CharacterMultiSelect
         label="Characters"
         v-model="formData.characterIds"
+        class="q-mb-md"
+        hint="Characters who use this currency"
       />
     </DialogForm>
   </div>

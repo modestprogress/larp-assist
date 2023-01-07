@@ -11,6 +11,10 @@
 .q-tab__label {
   font-size: 1.2em;
 }
+
+.text-h2 {
+  color: $white-warm;
+}
 </style>
 
 <template>
@@ -18,8 +22,8 @@
   <q-tabs
     dense
     class="text-grey"
-    active-color="primary"
-    indicator-color="primary"
+    active-color="secondary"
+    indicator-color="secondary"
     align="justify"
     narrow-indicator
   >

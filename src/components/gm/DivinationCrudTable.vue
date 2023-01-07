@@ -16,15 +16,24 @@
         label="Name"
         v-model="formData.name"
         :rules="[$rules.required()]"
+        class="q-mb-md"
+        hint="The link text to show the player for this divination "
       />
       <q-input
         outlined
         type="textarea"
         label="Content"
         v-model="formData.content"
+        class="q-mb-md"
         :rules="[$rules.required()]"
+        hint="The actual content of the divination"
       />
-      <CharacterSelect v-model="formData.characterId" label="Character" />
+      <CharacterSelect
+        v-model="formData.characterId"
+        label="Character"
+        class="q-mb-md"
+        hint="The characters who will experience this divination"
+      />
     </DialogForm>
   </div>
 </template>
