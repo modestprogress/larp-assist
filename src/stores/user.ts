@@ -5,17 +5,21 @@ import { defineStore } from 'pinia';
 import { useStorage } from '@vueuse/core';
 
 // Firebase/Firestore
-import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
+
+// Firebase functions
+import { getFunctions, httpsCallable } from 'firebase/functions';
 
 // Ours
 import { useCharactersStore } from './characters';
 
 function getSignedOutUser() {
   return {
-    isAuthorized: false,
+    isLoggedIn: false,
     id: '',
     gm: false,
-    characterId: '',
+    characterId: null,
+    isActivated: false,
   };
 }
 
@@ -29,32 +33,24 @@ export const useUserStore = defineStore('user', {
       this.user = getSignedOutUser();
     },
 
-    login(userId: string): Promise<void> {
+    async update(updates: { name?: string }): Promise<void> {
+      const functions = getFunctions();
+      const call = httpsCallable(functions, 'updateUser');
+      await call(updates);
+    },
+    async login(userId: string) {
       const charactersStore = useCharactersStore();
       charactersStore.refresh;
       const db = getFirestore();
       this.user.id = userId;
-      return Promise.all([
-        getDoc(doc(db, `users/${userId}`)).then((doc) => {
-          const userData = doc.data();
-          if (userData) {
-            this.user.gm = userData.gm;
-            this.user.characterId = userData.characterId;
-          }
-        }),
-      ]).then(() => {
-        this.user.isAuthorized = true;
-      });
-    },
+      const userDoc = await getDoc(doc(db, `users/${userId}`));
+      const userData = userDoc.data();
+      if (userData) {
+        this.user.gm = userData.gm;
+        this.user.characterId = userData.characterId;
+      }
 
-    register(characterId: string, userId: string): Promise<void> {
-      this.user.id = userId;
-      this.user.characterId = characterId;
-      this.user.isAuthorized = true;
-
-      const db = getFirestore();
-
-      return setDoc(doc(db, `users/${userId}`), { characterId: characterId });
+      this.user.isLoggedIn = true;
     },
   },
 });

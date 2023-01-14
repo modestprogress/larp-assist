@@ -51,7 +51,7 @@ import { useCharactersStore } from 'stores/characters';
 // Ours - Components
 import CrudTable from 'components/common/CrudTable.vue';
 import DialogForm from 'components/common/DialogForm.vue';
-import { Character } from 'src/models';
+import { Character, User } from 'src/models';
 
 const columns = ['name', 'notes', 'code'].map((name) => ({
   name: name,
@@ -69,7 +69,7 @@ const formData = ref();
 const dialog = ref();
 
 // The callback when you click edit or add
-const onEdit = (character = {}) => {
+const onEdit = (character = {} as User) => {
   formData.value = {
     id: character.id,
     code:

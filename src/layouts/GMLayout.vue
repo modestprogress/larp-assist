@@ -36,28 +36,5 @@
     <q-route-tab to="/gm/items" icon="backpack" label="Items" />
     <q-route-tab to="/gm/transactions" icon="edit_note" label="Transactions" />
   </q-tabs>
-  <q-btn
-    size="md"
-    label="Sign Out"
-    @click="onSignOut"
-    class="logout-top-right"
-    color="secondary"
-  />
   <router-view />
 </template>
-
-<script setup lang="ts">
-// Quasar (plugins)
-import { useQuasar } from 'quasar';
-
-// Firebase
-import { signOut, getAuth } from 'firebase/auth';
-
-const $q = useQuasar();
-
-const onSignOut = () => {
-  signOut(getAuth()).catch((err) => {
-    $q.notify({ type: 'negative', message: err });
-  });
-};
-</script>

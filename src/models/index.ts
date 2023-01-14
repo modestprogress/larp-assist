@@ -4,24 +4,23 @@ export interface Model {
   updatedAtEpoch?: number;
 }
 
-export interface Listing {
-  itemId: string;
-  available: number;
-  value: number;
-}
-
-export interface Item {
+export interface User extends Model {
+  id: string;
+  gm: boolean;
   name: string;
-  description: string;
+  characterId: string;
+  code: string;
+  notes: string;
+  email: string;
 }
 
-export interface Listing {
+export interface Listing extends Model {
   itemId: string;
   available: number;
   value: number;
 }
 
-export interface Item {
+export interface Item extends Model {
   name: string;
   description: string;
 }
@@ -64,10 +63,6 @@ export interface Divination extends Model {
 export interface Motd extends Model {
   content: string;
   characterId: string;
-}
-
-export interface UserPreference {
-  name: string;
 }
 
 export interface Transaction extends Model {

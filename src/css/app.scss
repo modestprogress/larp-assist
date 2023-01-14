@@ -32,11 +32,15 @@ body {
     border: 1px solid $secondary;
 }
 
+.q-field--focused .q-field__control:before {
+    border: 1px solid $primary;
+}
+
 .q-field {
     color: $white-warm;
 }
 
-// HACK to make autocomplete not give nasty background 
+// HACK to make autocomplete not give nasty background
 // https://forum.quasar-framework.org/topic/6099/form-input-autofill-background-color-in-chrome/7
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
