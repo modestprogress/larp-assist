@@ -4,6 +4,17 @@ import { RouteRecordRaw } from 'vue-router';
 // Ours
 import { useUserStore } from 'stores/user';
 
+const redirectIfNotReady = () => {
+  const userStore = useUserStore();
+  if (!userStore.user.isLoggedIn) {
+    return '/auth';
+  }
+
+  if (!userStore.user.isActivated) {
+    return '/unactivated';
+  }
+};
+
 const routes: RouteRecordRaw[] = [
   // Login and register page
   {
@@ -32,21 +43,14 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     redirect: () => {
       const userStore = useUserStore();
-
-      if (!userStore.user.isLoggedIn) {
-        return '/auth';
-      }
-
-      if (!userStore.user.isActivated) {
-        return '/unactivated';
-      }
-
-      return store.user.gm ? '/gm' : '/player';
+      return userStore.user.gm ? '/gm' : '/player';
     },
+    beforeEnter: redirectIfNotReady,
   },
   {
     path: '/player',
     component: () => import('layouts/PlayerLayout.vue'),
+    beforeEnter: redirectIfNotReady,
     children: [
       { path: '', redirect: '/player/motds' },
       {
@@ -70,6 +74,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/gm',
     component: () => import('layouts/GMLayout.vue'),
+    beforeEnter: redirectIfNotReady,
     children: [
       { path: '', redirect: '/gm/characters' },
       {
@@ -111,6 +116,10 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'transactions',
         component: () => import('pages/gm/TransactionsPage.vue'),
+      },
+      {
+        path: 'users',
+        component: () => import('pages/player/UsersPage.vue'),
       },
     ],
   },

@@ -35,6 +35,7 @@
     <q-route-tab to="/gm/traps" icon="warning" label="Traps" />
     <q-route-tab to="/gm/items" icon="backpack" label="Items" />
     <q-route-tab to="/gm/transactions" icon="edit_note" label="Transactions" />
+    <q-route-tab to="/gm/users" icon="group" label="Users" />
   </q-tabs>
   <router-view />
 </template>

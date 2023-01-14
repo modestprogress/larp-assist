@@ -7,6 +7,7 @@ export interface Model {
 export interface User extends Model {
   id: string;
   gm: boolean;
+  isActivated: boolean;
   name: string;
   characterId: string;
   code: string;

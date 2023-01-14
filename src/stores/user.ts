@@ -48,6 +48,7 @@ export const useUserStore = defineStore('user', {
       if (userData) {
         this.user.gm = userData.gm;
         this.user.characterId = userData.characterId;
+        this.user.isActivated = userData.isActivated;
       }
 
       this.user.isLoggedIn = true;

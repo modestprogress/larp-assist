@@ -1,5 +1,5 @@
 <template>
-  <div class="text-h2 q-mb-lg heading text-wizard text-center">
+  <div class="text-h2 q-my-lg heading text-wizard text-center">
     The journal of {{ name }}
   </div>
   <q-tabs shrink stretch class="q-mb-md">

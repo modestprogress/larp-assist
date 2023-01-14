@@ -53,7 +53,7 @@ service cloud.firestore {
     }
 
     match /users/{userId} {
-      allow write: if isUserOrGm(userId);
+      allow write: if isGm();
       allow read: if isSignedIn();
     }
 
@@ -62,19 +62,11 @@ service cloud.firestore {
     }
 
     function isSignedIn() {
-      return request.auth != null
+      return request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isActivated
     }
 
     function isGm() {
       return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.gm
-    }
-
-    function isUser(userId) {
-      return request.auth.uid == userId;
-    }
-
-    function isUserOrGm(userId) {
-      return isUser(userId) || isGm()
     }
   }
 }

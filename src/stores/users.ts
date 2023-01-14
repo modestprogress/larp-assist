@@ -14,6 +14,7 @@ export const useUsersStore = defineStore('users', () => {
         name: data.name,
         characterId: data.characterId,
         email: data.email,
+        isActivated: data.isActivated,
       }),
     }),
   };
