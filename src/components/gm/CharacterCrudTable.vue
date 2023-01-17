@@ -22,15 +22,6 @@
       />
       <q-input
         outlined
-        label="Registration Code"
-        v-model="formData.code"
-        :autofocus="true"
-        :rules="[$rules.required()]"
-        class="q-mb-md"
-        hint="Provided at user registration to associate user with character"
-      />
-      <q-input
-        outlined
         label="Notes"
         type="textarea"
         v-model="formData.notes"
@@ -53,7 +44,7 @@ import CrudTable from 'components/common/CrudTable.vue';
 import DialogForm from 'components/common/DialogForm.vue';
 import { Character, User } from 'src/models';
 
-const columns = ['name', 'notes', 'code'].map((name) => ({
+const columns = ['name', 'notes'].map((name) => ({
   name: name,
   field: name,
   label: name[0].toUpperCase() + name.slice(1),

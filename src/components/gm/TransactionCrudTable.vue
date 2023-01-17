@@ -11,18 +11,20 @@
     />
 
     <DialogForm ref="dialog" @submit="onSubmit">
-      <CharacterSelect
+      <SelectField
         label="Character"
         v-model="formData.characterId"
         class="q-mb-md"
         hint="Character's balance to be effected"
+        :values_labels="characterNames"
       />
-      <CurrencySelect
+      <SelectField
         label="Currency"
         v-model="formData.currencyId"
         class="q-mb-md"
         hint="Currency of transaction"
         :rules="[$rules.required()]"
+        :values_labels="currencyNames"
       />
       <q-input
         outlined
@@ -54,8 +56,7 @@ import { useTransactionsStore } from 'stores/transactions';
 // Ours - Components
 import CrudTable from 'components/common/CrudTable.vue';
 import DialogForm from 'components/common/DialogForm.vue';
-import CharacterSelect from 'components/common/CharacterSelect.vue';
-import CurrencySelect from 'components/common/CurrencySelect.vue';
+import SelectField from 'components/common/SelectField.vue';
 
 const columns = [
   {
@@ -94,8 +95,8 @@ const onEdit = (transaction = {}) => {
     id: transaction.id,
     amount: transaction.amount || 0,
     notes: transaction.notes || '',
-    currencyId: transaction.currencyId,
-    characterId: transaction.characterId,
+    currencyId: transaction.currencyId || null,
+    characterId: transaction.characterId || null,
   };
   dialog.value.show();
 };
@@ -107,8 +108,8 @@ const onDelete = (transaction) => transactionsStore.delete(transaction.id);
 const onSubmit = () => transactionsStore.createOrUpdate(formData.value);
 
 // Character names provided upstream
-const characterNames = inject('characterNames');
-const currencyNames = inject('currencyNames');
+const characterNames = inject<Map<string, string>>('characterNames');
+const currencyNames = inject<Map<string, string>>('currencyNames');
 
 // The rows we're displaying. We add in the character names.
 const transactions = computed(() =>

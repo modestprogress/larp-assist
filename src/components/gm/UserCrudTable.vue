@@ -22,7 +22,11 @@
       <q-checkbox v-model="formData.isActivated" label="Account activated" />
       <q-checkbox v-model="formData.gm" label="GM Super Powers" />
 
-      <CharacterSelect label="Character" v-model="formData.characterId" />
+      <SelectField
+        label="Character"
+        :values_labels="characterNames"
+        v-model="formData.characterId"
+      />
     </DialogForm>
   </div>
 </template>
@@ -40,7 +44,7 @@ import { useUsersStore } from 'stores/users';
 // Ours - Components
 import CrudTable from 'components/common/CrudTable.vue';
 import DialogForm from 'components/common/DialogForm.vue';
-import CharacterSelect from 'components/common/CharacterSelect.vue';
+import SelectField from 'components/common/SelectField.vue';
 
 const columns = [
   ...['name', 'character', 'email', 'activated'].map((name) => ({
@@ -70,11 +74,12 @@ const formData = ref();
 const dialog = ref(null);
 
 // The callback when you click edit or add
-const onEdit = (user: User) => {
+const onEdit = (user = {}) => {
   formData.value = {
     id: user.id,
-    characterId: user.characterId || '',
+    characterId: user.characterId || null,
     name: user.name || '',
+    gm: user.gm || false,
     isActivated: user.isActivated || false,
   };
   dialog.value.show();

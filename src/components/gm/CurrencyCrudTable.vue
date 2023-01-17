@@ -20,11 +20,13 @@
         hint="How the currency is referred  to"
       />
 
-      <CharacterMultiSelect
+      <SelectField
+        multiple
         label="Characters"
         v-model="formData.characterIds"
         class="q-mb-md"
         hint="Characters who use this currency"
+        :values_labels="characterNames"
       />
     </DialogForm>
   </div>
@@ -40,7 +42,7 @@ import { useCurrenciesStore } from 'stores/currencies';
 // Ours - Components
 import CrudTable from 'components/common/CrudTable.vue';
 import DialogForm from 'components/common/DialogForm.vue';
-import CharacterMultiSelect from 'components/common/CharacterMultiSelect.vue';
+import SelectField from 'components/common/SelectField.vue';
 
 const columns = [
   {
@@ -81,13 +83,13 @@ const onDelete = (currency) => currenciesStore.delete(currency.id);
 const onSubmit = () => currenciesStore.createOrUpdate(formData.value);
 
 // Character names provided upstream
-const characterNames = inject('characterNames');
+const characterNames = inject<Map<string, string>>('characterNames');
 
 // The rows we're displaying. We add in the character names.
 const currencies = computed(() =>
   currenciesStore.items.map((currency) => ({
-    characterNames: (currency.characterIds || []).map((id) =>
-      characterNames.value.get(id)
+    characterNames: (currency.characterIds || []).map(
+      (id) => characterNames.value.get(id) || id
     ),
     ...currency,
   }))

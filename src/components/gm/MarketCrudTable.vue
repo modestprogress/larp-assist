@@ -25,16 +25,19 @@
         hint="Name to show for the currency"
       />
 
-      <CurrencySelect
+      <SelectField
         label="Currency"
         class="q-mb-md"
         v-model="formData.currencyId"
+        :values_labels="currencyNames"
         hint="The currency the market uses"
       />
 
-      <CharacterMultiSelect
+      <SelectField
+        multiple
         label="Characters"
         v-model="formData.characterIds"
+        :values_labels="characterNames"
         hint="Who can see and shop at the markets"
       />
     </DialogForm>
@@ -51,8 +54,7 @@ import { useMarketsStore } from 'stores/markets';
 // Ours - Components
 import CrudTable from 'components/common/CrudTable.vue';
 import DialogForm from 'components/common/DialogForm.vue';
-import CharacterMultiSelect from 'components/common/CharacterMultiSelect.vue';
-import CurrencySelect from 'components/common/CurrencySelect.vue';
+import SelectField from 'components/common/SelectField.vue';
 
 const columns = [
   {
@@ -87,12 +89,7 @@ const dialog = ref(null);
 
 // The callback when you click edit or add
 const onEdit = (market = {}) => {
-  formData.value = {
-    id: market.id,
-    name: market.name,
-    characterIds: market.characterIds || [],
-    currencyId: market.currencyId || '',
-  };
+  formData.value = market;
   dialog.value.show();
 };
 
@@ -103,8 +100,8 @@ const onDelete = (market) => marketsStore.delete(market.id);
 const onSubmit = () => marketsStore.createOrUpdate(formData.value);
 
 // Character and currency names provided upstream
-const characterNames = inject('characterNames');
-const currencyNames = inject('currencyNames');
+const characterNames = inject<Map<string, string>>('characterNames');
+const currencyNames = inject<Map<string, string>>('currencyNames');
 
 // The rows we're displaying. We add in the character names.
 const markets = computed(() =>
