@@ -2,49 +2,49 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /motds/{motdId} {
-      allow read: if isSignedIn();
+      allow read: if isActivated();
       allow write: if isGm()
     }
 
     match /items/{itemId} {
-      allow read: if isSignedIn();
+      allow read: if isActivated();
       allow write: if isGm()
     }
 
     match /markets/{marketId} {
-      allow read: if isSignedIn();
+      allow read: if isActivated();
       allow write: if isGm()
     }
 
     match /sections/{sectionId} {
-      allow read: if isSignedIn();
+      allow read: if isActivated();
       allow write: if isGm()
     }
 
     match /books/{bookId} {
-      allow read: if isSignedIn();
+      allow read: if isActivated();
       allow write: if isGm()
     }
 
     match /traps/{trapId} {
-      allow read: if isSignedIn();
+      allow read: if isActivated();
       allow write: if isGm()
     }
 
     match /currencies/{currencyId} {
-      allow read: if isSignedIn();
+      allow read: if isActivated();
       allow write: if isGm();
     }
 
     match /divinations/{divinationId} {
-      allow read: if isSignedIn();
+      allow read: if isActivated();
       allow write: if isGm();
     }
 
     match /transactions/{txId} {
-      allow read: if isGm() || isSignedIn();
-      allow write: if isGm()
-      allow create: if isGm() || request.auth.uid == request.resource.data.createdByUserId
+      allow read: if isActivated();
+      allow write: if isGm();
+      allow create: if isGm();
     }
 
     match /characters/{characterId} {
@@ -53,20 +53,24 @@ service cloud.firestore {
     }
 
     match /users/{userId} {
+      allow read: if isActivated() || isUser(userId);
       allow write: if isGm();
-      allow read: if isSignedIn();
     }
 
     match /{document=**} {
       allow read, write: if false;
     }
 
-    function isSignedIn() {
+    function isActivated() {
       return request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isActivated
     }
 
+    function isUser(uid) {
+      return request.auth.uid == uid;
+    }
+
     function isGm() {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.gm
+      return isActivated() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.gm
     }
   }
 }
