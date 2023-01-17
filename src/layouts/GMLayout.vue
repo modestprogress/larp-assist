@@ -1,10 +1,4 @@
 <style scoped lang="scss">
-.logout-top-right {
-  position: fixed;
-  top: 0;
-  right: 0;
-}
-
 .q-tab__content .q-icon {
   font-size: 1.8em;
 }
@@ -18,7 +12,7 @@
 </style>
 
 <template>
-  <div class="text-h2 q-mb-lg heading text-wizard text-center">Larp Assist</div>
+  <div class="text-h2 q-my-lg heading text-wizard text-center">Larp Assist</div>
   <q-tabs
     dense
     class="text-grey"
