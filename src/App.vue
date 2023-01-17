@@ -2,9 +2,6 @@
 // Vue
 import { computed } from 'vue';
 
-// Vue Router
-import { useRouter } from 'vue-router';
-
 // Quasar
 import { useQuasar } from 'quasar';
 
@@ -16,8 +13,6 @@ import { useUserStore } from 'src/stores/user';
 
 const $q = useQuasar();
 $q.dark.set(true);
-
-const $router = useRouter();
 
 const userStore = useUserStore();
 const isLoggedIn = computed(() => userStore.user.isLoggedIn);

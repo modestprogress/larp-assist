@@ -39,6 +39,7 @@ export const useUserStore = defineStore('user', {
       await call(updates);
     },
     async login(userId: string) {
+      console.log(userId);
       const charactersStore = useCharactersStore();
       charactersStore.refresh;
       const db = getFirestore();

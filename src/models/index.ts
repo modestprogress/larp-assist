@@ -27,8 +27,11 @@ export interface Item extends Model {
 }
 
 export interface File extends Model {
-  name: string;
+  code: string;
+  bucket: string;
+  filename: string;
   url: string;
+  common_name: string;
   common: boolean;
 }
 
@@ -36,11 +39,6 @@ export interface Character extends Model {
   name: string;
   code: string;
   notes: string;
-}
-
-export interface Trap extends Model {
-  name: string;
-  content: string;
 }
 
 export interface Market extends Model {

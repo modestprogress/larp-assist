@@ -5,11 +5,15 @@ import { RouteRecordRaw } from 'vue-router';
 import { useUserStore } from 'stores/user';
 
 const redirectIfNotReady = () => {
+  console.log('redirectIfNotReady');
   const userStore = useUserStore();
   if (!userStore.user.isLoggedIn) {
     return '/auth';
   }
 
+  console.log('blorp');
+
+  console.log(userStore.user.isActivated);
   if (!userStore.user.isActivated) {
     return '/unactivated';
   }

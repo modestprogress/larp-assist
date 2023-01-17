@@ -31,10 +31,11 @@
         v-model="formData.type"
         :rules="[$rules.required()]"
       />
-      <TrapSelect
+      <SelectField
         v-if="formData.type == SectionType.Trap"
         label="Trap"
         v-model="formData.trapId"
+        :values_labels="trapNames"
         :rules="[$rules.required()]"
       />
       <q-input
@@ -53,7 +54,7 @@
 import { computed, ref, inject } from 'vue';
 
 // Ours - model
-import { SectionType, sortSections } from 'src/models/books';
+import { SectionType, Section, sortSections, Trap } from 'src/models/books';
 
 // Ours - stores
 import { useSectionsStore } from 'stores/sections';
@@ -61,13 +62,19 @@ import { useSectionsStore } from 'stores/sections';
 // Ours - Components
 import CrudTable from 'components/common/CrudTable.vue';
 import DialogForm from 'components/common/DialogForm.vue';
-import TrapSelect from 'components/common/TrapSelect.vue';
+import SelectField from 'components/common/SelectField.vue';
 
 const props = defineProps({
   bookId: String,
 });
 
-const trapsById = inject('trapsById');
+const trapsById = inject<Map<string, Trap>>('trapsById');
+
+const trapNames = computed(() => {
+  const traps = Array.from(trapsById?.values() || []);
+
+  return new Map(traps.map((t) => [t.id, t.name]));
+});
 
 const displayText = (section: Section) => {
   if (section.type == SectionType.Trap) {

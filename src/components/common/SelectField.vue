@@ -24,11 +24,16 @@
 <script setup lang="ts">
 import { computed, ref, toRefs } from 'vue';
 
+interface Option {
+  label: string;
+  value: string;
+}
+
 const props = defineProps({
   values_labels: Map<string, string>,
 });
 
-const labeledOptions = computed(() => {
+const labeledOptions = computed((): Array<Option> => {
   const { values_labels } = toRefs(props);
 
   if (values_labels?.value === undefined) {
@@ -39,13 +44,13 @@ const labeledOptions = computed(() => {
     .sort()
     .map((value: string) => {
       return {
-        label: values_labels.value?.get(value),
+        label: values_labels.value?.get(value) || '',
         value: value,
       };
     });
 });
 
-const options = ref<Map<string, string>>(labeledOptions.value);
+const options = ref<Array<Option>>(labeledOptions.value);
 
 const filterFn = (val: string, update: (options: any) => void) => {
   update(() => {
