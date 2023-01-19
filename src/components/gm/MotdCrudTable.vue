@@ -19,7 +19,11 @@
         :autofocus="true"
         :rules="[$rules.required()]"
       />
-      <CharacterSelect label="Character" v-model="formData.characterId" />
+      <SelectField
+        label="Character"
+        v-model="formData.characterId"
+        :values_labels="characterNames"
+      />
     </DialogForm>
   </div>
 </template>
@@ -34,7 +38,7 @@ import { useMotdsStore } from 'stores/motds';
 // Ours - Components
 import CrudTable from 'components/common/CrudTable.vue';
 import DialogForm from 'components/common/DialogForm.vue';
-import CharacterSelect from 'components/common/CharacterSelect.vue';
+import SelectField from 'components/common/SelectField.vue';
 
 const columns = [
   {
@@ -65,7 +69,7 @@ const dialog = ref(null);
 const onEdit = (motd = {}) => {
   formData.value = {
     id: motd.id,
-    characterId: motd.characterId || '',
+    characterId: motd.characterId || null,
     content: motd.content,
   };
   dialog.value.show();

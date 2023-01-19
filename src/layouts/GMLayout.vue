@@ -22,13 +22,14 @@
     narrow-indicator
   >
     <q-route-tab to="/gm/books" icon="menu_book" label="Books" />
-    <q-route-tab to="/gm/divinations" icon="visibility" label="Divinations" />
     <q-route-tab to="/gm/characters" icon="face" label="Characters" />
     <q-route-tab to="/gm/currency" icon="attach_money" label="Currency" />
-    <q-route-tab to="/gm/markets" icon="store" label="Markets" />
-    <q-route-tab to="/gm/traps" icon="warning" label="Traps" />
+    <q-route-tab to="/gm/divinations" icon="visibility" label="Divinations" />
     <q-route-tab to="/gm/items" icon="backpack" label="Items" />
+    <q-route-tab to="/gm/markets" icon="store" label="Markets" />
+    <q-route-tab to="/gm/motds" icon="today" label="MOTDs" />
     <q-route-tab to="/gm/transactions" icon="edit_note" label="Transactions" />
+    <q-route-tab to="/gm/traps" icon="warning" label="Traps" />
     <q-route-tab to="/gm/users" icon="group" label="Users" />
   </q-tabs>
   <router-view />

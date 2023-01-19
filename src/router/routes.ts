@@ -123,7 +123,11 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'users',
-        component: () => import('pages/player/UsersPage.vue'),
+        component: () => import('pages/gm/UsersPage.vue'),
+      },
+      {
+        path: 'motds',
+        component: () => import('pages/gm/MotdsPage.vue'),
       },
     ],
   },
