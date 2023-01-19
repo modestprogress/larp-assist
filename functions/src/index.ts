@@ -7,6 +7,18 @@ import { info, warn } from 'firebase-functions/logger';
 
 admin.initializeApp();
 
+const toLogLine = (data: { [key: string]: any }) => {
+  return Object.entries(data)
+    .map(([key, value]) => {
+      if (value instanceof Timestamp) {
+        value = value.toDate();
+      }
+
+      return `${key}: ${value}`;
+    })
+    .join(', ');
+};
+
 exports.onCreateUser = auth.user().onCreate(async (user) => {
   const { uid, displayName, email } = user;
   const userData = {
@@ -18,9 +30,7 @@ exports.onCreateUser = auth.user().onCreate(async (user) => {
     gm: false,
   };
 
-  info(
-    `User created with uid=${uid}, email=${email}, displayName=${displayName}`
-  );
+  info(`User created with `);
 
   await admin
     .firestore()
@@ -106,41 +116,24 @@ exports.updateUser = https.onCall(async (data, context) => {
 
   const { uid } = context.auth;
 
-  const allowedAttributes = ['name', 'photoURL', 'email'];
   const userData: { [key: string]: any } = {};
-
-  let logLine = `User ${uid} updated in the database with: `;
+  const allowedAttributes = ['name', 'photoURL', 'email'];
   allowedAttributes.forEach((attribute) => {
-    if (data[attribute]) {
+    if (data[attribute] != null) {
       userData[attribute] = data[attribute];
-      logLine += `${attribute}=${data[attribute]}, `;
     }
   });
 
-  logLine = logLine.slice(0, -2);
+  await admin.firestore().collection('users').doc(uid).update(userData);
+  info('User updated', userData);
 
-  await admin
-    .firestore()
-    .collection('users')
-    .doc(uid)
-    .set(userData, { merge: true });
-
-  info(logLine);
-
-  const { ...profileUpdate } = userData;
-  if (profileUpdate.name) {
-    profileUpdate['displayName'] = profileUpdate.name;
-    delete profileUpdate['name'];
+  if (userData.name) {
+    userData['displayName'] = userData.name;
+    delete userData['name'];
   }
 
-  logLine = `User ${context.auth.uid} updated in firestore with: `;
-  Object.keys(profileUpdate).forEach((attribute) => {
-    logLine += `${attribute}=${profileUpdate[attribute]}, `;
-  });
-
-  logLine = logLine.slice(0, -2);
-
-  await admin.auth().updateUser(uid, profileUpdate);
+  // Update the user in Firebase Auth
+  await admin.auth().updateUser(uid, userData);
 
   return { success: true };
 });
