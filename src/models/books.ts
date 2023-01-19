@@ -22,6 +22,11 @@ export interface Book extends Model {
   location: string;
 }
 
+export interface Trap extends Model {
+  name: string;
+  content: string;
+}
+
 export const hashChapter = (chapter: Array<Section>) =>
   chapter.map((section) => section.id).join('!');
 

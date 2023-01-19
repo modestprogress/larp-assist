@@ -14,10 +14,16 @@ import { useCharactersStore } from 'stores/characters';
 import { useCurrenciesStore } from 'stores/currencies';
 
 const charactersStore = useCharactersStore();
-charactersStore.refresh();
-provide('characterNames', computed(charactersStore.getCharacterNames));
+provide(
+  'characterNames',
+  computed(() => charactersStore.getCharacterNames())
+);
 
 const currenciesStore = useCurrenciesStore();
-currenciesStore.refresh();
-provide('currencyNames', computed(currenciesStore.getCurrencyNames));
+provide(
+  'currencyNames',
+  computed(() => currenciesStore.getCurrencyNames())
+);
+
+await Promise.all([currenciesStore.refresh(), charactersStore.refresh()]);
 </script>

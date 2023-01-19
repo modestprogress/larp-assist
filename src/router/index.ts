@@ -24,7 +24,7 @@ export default route(function (/* { store, ssrContext } */) {
     ? createWebHistory
     : createWebHashHistory;
 
-  const Router = createRouter({
+  const router = createRouter({
     scrollBehavior: () => ({ left: 0, top: 0 }),
     routes,
 
@@ -34,5 +34,26 @@ export default route(function (/* { store, ssrContext } */) {
     history: createHistory(process.env.VUE_ROUTER_BASE),
   });
 
-  return Router;
+  /*
+  router.beforeEach((to) => {
+    const user = useUserStore().user;
+    if (!user.isAuthorized && to.path !== '/auth') {
+      return '/auth';
+    }
+
+    if (user.isAuthorized && to.path === '/auth') {
+      return '/';
+    }
+
+    if (!user.isActivated && to.path !== '/unactivated') {
+      return '/unactivated';
+    }
+
+    if (user.isActivated && to.path === '/unactivated') {
+      return '/';
+    }
+  });
+ */
+
+  return router;
 });

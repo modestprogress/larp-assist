@@ -1,12 +1,3 @@
-<style lang="scss">
-.q-field--outlined .q-field__control:before {
-  border: 1px solid $secondary;
-}
-
-.q-field {
-  color: $white-warm;
-}
-</style>
 <template>
   <q-form @submit="signIn" class="full-width">
     <q-input

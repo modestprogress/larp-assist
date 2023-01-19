@@ -53,8 +53,8 @@
 import { computed, ref, inject } from 'vue';
 
 // Ours - Components
-import CurrencySelect from 'components/common/CurrencySelect.vue';
-import CharacterSelect from 'components/common/CharacterSelect.vue';
+//import CurrencySelect from 'components/common/CurrencySelect.vue';
+//import CharacterSelect from 'components/common/CharacterSelect.vue';
 
 const onTransfer = () => {
   console.log('Transfering!');

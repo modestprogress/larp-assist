@@ -5,7 +5,6 @@ import { ref } from 'vue';
 // Ours
 import RegistrationForm from 'components/common/RegistrationForm.vue';
 import LoginForm from 'components/common/LoginForm.vue';
-import SimpleCard from 'components/common/SimpleCard.vue';
 
 const tab = ref(true);
 </script>

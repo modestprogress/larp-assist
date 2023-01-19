@@ -12,7 +12,7 @@
 
     <DialogForm ref="dialog" @submit="onSubmit">
       <div class="text-center q-mb-md text-h6" v-if="formData.id">
-        <router-link :to="`/gm/books/${formData.id}`">
+        <router-link class="text-primary" :to="`/gm/books/${formData.id}`">
           Edit chapters
         </router-link>
       </div>
@@ -23,24 +23,31 @@
         v-model="formData.name"
         :autofocus="true"
         :rules="[$rules.required()]"
+        class="q-mb-md"
+        hint="The name of the book to display"
       />
       <q-input
         outlined
         label="Lookup Code"
         v-model="formData.code"
         :rules="[$rules.required()]"
+        class="q-mb-md"
+        hint="The code players will lookup the book with"
       />
       <q-input
         outlined
         label="Author"
         v-model="formData.author"
-        :rules="[$rules.required()]"
+        class="q-mb-md"
+        hint="The in-game 'author' of the book to show players"
       />
       <q-input
         outlined
         label="Location"
         v-model="formData.location"
         :rules="[$rules.required()]"
+        class="q-mb-md"
+        hint="The 'location' of the book to show players"
       />
       <q-input
         outlined
@@ -48,6 +55,8 @@
         label="Description"
         v-model="formData.description"
         :rules="[$rules.required()]"
+        class="q-mb-md"
+        hint="Description of the book to show players"
       />
     </DialogForm>
   </div>

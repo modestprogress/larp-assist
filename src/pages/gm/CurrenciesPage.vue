@@ -14,10 +14,16 @@ import { useCharactersStore } from 'stores/characters';
 import CurrencyCrudTable from 'components/gm/CurrencyCrudTable.vue';
 
 const currenciesStore = useCurrenciesStore();
-currenciesStore.refresh();
-provide('currencyNames', computed(currenciesStore.getCurrencyNames));
+provide(
+  'currencyNames',
+  computed(() => currenciesStore.getCurrencyNames())
+);
 
 const charactersStore = useCharactersStore();
-charactersStore.refresh();
-provide('characterNames', computed(charactersStore.getCharacterNames));
+provide(
+  'characterNames',
+  computed(() => charactersStore.getCharacterNames())
+);
+
+await Promise.all([currenciesStore.refresh(), charactersStore.refresh()]);
 </script>
