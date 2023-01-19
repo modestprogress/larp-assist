@@ -4,31 +4,34 @@ export interface Model {
   updatedAtEpoch?: number;
 }
 
-export interface Listing {
-  itemId: string;
-  available: number;
-  value: number;
-}
-
-export interface Item {
+export interface User extends Model {
+  id: string;
+  gm: boolean;
+  isActivated: boolean;
   name: string;
-  description: string;
+  characterId: string;
+  code: string;
+  notes: string;
+  email: string;
 }
 
-export interface Listing {
+export interface Listing extends Model {
   itemId: string;
   available: number;
   value: number;
 }
 
-export interface Item {
+export interface Item extends Model {
   name: string;
   description: string;
 }
 
 export interface File extends Model {
-  name: string;
+  code: string;
+  bucket: string;
+  filename: string;
   url: string;
+  common_name: string;
   common: boolean;
 }
 
@@ -36,11 +39,6 @@ export interface Character extends Model {
   name: string;
   code: string;
   notes: string;
-}
-
-export interface Trap extends Model {
-  name: string;
-  content: string;
 }
 
 export interface Market extends Model {
@@ -64,10 +62,6 @@ export interface Divination extends Model {
 export interface Motd extends Model {
   content: string;
   characterId: string;
-}
-
-export interface UserPreference {
-  name: string;
 }
 
 export interface Transaction extends Model {

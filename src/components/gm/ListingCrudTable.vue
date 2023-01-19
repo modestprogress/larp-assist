@@ -15,10 +15,11 @@
         Edit item quantities
       </router-link>
     </div>
-    <ItemSelect
+    <SelectField
       label="Item"
       class="q-mb-md"
       v-model="formData.itemId"
+      :values_labels="itemNames"
       hint="The item available to purchase"
     />
     <q-input
@@ -51,7 +52,7 @@ import { useItemsStore } from 'stores/items';
 // Ours - Components
 import CrudTable from 'components/common/CrudTable.vue';
 import DialogForm from 'components/common/DialogForm.vue';
-import ItemSelect from 'components/common/ItemSelect.vue';
+import SelectField from 'components/common/SelectField.vue';
 
 const columns = [
   {
@@ -110,6 +111,10 @@ const listings = computed(() => {
   }
 
   return Object.values(market.listings);
+});
+
+const itemNames = computed(() => {
+  return itemsStore.getItemNames();
 });
 
 provide(

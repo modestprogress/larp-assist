@@ -17,19 +17,16 @@
         v-model="formData.name"
         :autofocus="true"
         :rules="[$rules.required()]"
-      />
-      <q-input
-        outlined
-        label="Registration Code"
-        v-model="formData.code"
-        :autofocus="true"
-        :rules="[$rules.required()]"
+        class="q-mb-md"
+        hint="The name character's name"
       />
       <q-input
         outlined
         label="Notes"
         type="textarea"
         v-model="formData.notes"
+        class="q-mb-md"
+        hint="GM-only notes"
       />
     </DialogForm>
   </div>
@@ -45,9 +42,9 @@ import { useCharactersStore } from 'stores/characters';
 // Ours - Components
 import CrudTable from 'components/common/CrudTable.vue';
 import DialogForm from 'components/common/DialogForm.vue';
-import { Character } from 'src/models';
+import { Character, User } from 'src/models';
 
-const columns = ['name', 'notes', 'code'].map((name) => ({
+const columns = ['name', 'notes'].map((name) => ({
   name: name,
   field: name,
   label: name[0].toUpperCase() + name.slice(1),
@@ -63,7 +60,7 @@ const formData = ref();
 const dialog = ref();
 
 // The callback when you click edit or add
-const onEdit = (character = {}) => {
+const onEdit = (character = {} as User) => {
   formData.value = {
     id: character.id,
     code:

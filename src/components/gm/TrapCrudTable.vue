@@ -17,6 +17,8 @@
         v-model="formData.name"
         :autofocus="true"
         :rules="[$rules.required()]"
+        class="q-mb-md"
+        hint="Shorthand for referring to this trap"
       />
       <q-input
         outlined
@@ -25,6 +27,8 @@
         v-model="formData.content"
         :autofocus="true"
         :rules="[$rules.required()]"
+        class="q-mb-md"
+        hint="The text of the trap"
       />
     </DialogForm>
   </div>
@@ -57,8 +61,12 @@ const formData = ref();
 const dialog = ref(null);
 
 // The callback when you click edit or add
-const onEdit = (trap) => {
-  formData.value = { ...trap };
+const onEdit = (trap = {}) => {
+  formData.value = {
+    id: trap.id,
+    name: trap.name || '',
+    content: trap.content || '',
+  };
   dialog.value.show();
 };
 

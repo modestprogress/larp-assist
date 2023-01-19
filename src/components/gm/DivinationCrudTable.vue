@@ -16,15 +16,25 @@
         label="Name"
         v-model="formData.name"
         :rules="[$rules.required()]"
+        class="q-mb-md"
+        hint="The link text to show the player for this divination "
       />
       <q-input
         outlined
         type="textarea"
         label="Content"
         v-model="formData.content"
+        class="q-mb-md"
         :rules="[$rules.required()]"
+        hint="The actual content of the divination"
       />
-      <CharacterSelect v-model="formData.characterId" label="Character" />
+      <SelectField
+        v-model="formData.characterId"
+        label="Character"
+        class="q-mb-md"
+        :values_labels="characterNames"
+        hint="The characters who will experience this divination"
+      />
     </DialogForm>
   </div>
 </template>
@@ -39,7 +49,7 @@ import { useDivinationsStore } from 'stores/divinations';
 // Ours - Components
 import CrudTable from 'components/common/CrudTable.vue';
 import DialogForm from 'components/common/DialogForm.vue';
-import CharacterSelect from 'components/common/CharacterSelect.vue';
+import SelectField from 'components/common/SelectField.vue';
 
 const columns = [
   {
@@ -76,12 +86,7 @@ const dialog = ref(null);
 
 // The callback when you click edit or add
 const onEdit = (divination = {}) => {
-  formData.value = {
-    id: divination.id,
-    content: divination.content,
-    name: divination.name,
-    characterId: divination.characterId || '',
-  };
+  formData.value = divination;
   dialog.value.show();
 };
 
@@ -92,7 +97,7 @@ const onDelete = (divination) => divinationsStore.delete(divination.id);
 const onSubmit = () => divinationsStore.createOrUpdate(formData.value);
 
 // Character names provided upstream
-const characterNames = inject('characterNames');
+const characterNames = inject<Map<string, string>>('characterNames');
 
 // The rows we're displaying. We add in the character names.
 const divinations = computed(() =>

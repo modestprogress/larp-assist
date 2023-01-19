@@ -1,31 +1,33 @@
 <template>
-  <CrudTable
-    :columns="columns"
-    :rows="items"
-    :loading="loading"
-    title="Items"
-    @add="onEdit"
-    @edit="onEdit"
-    @delete="onDelete"
-  />
+  <div class="q-pa-md">
+    <CrudTable
+      :columns="columns"
+      :rows="items"
+      :loading="loading"
+      title="Items"
+      @add="onEdit"
+      @edit="onEdit"
+      @delete="onDelete"
+    />
 
-  <DialogForm ref="dialog" @submit="onSubmit">
-    <q-input
-      outlined
-      label="Name"
-      v-model="formData.name"
-      :autofocus="true"
-      :rules="[$rules.required()]"
-    />
-    <q-input
-      outlined
-      type="textarea"
-      label="description"
-      v-model="formData.description"
-      :autofocus="true"
-      :rules="[$rules.required()]"
-    />
-  </DialogForm>
+    <DialogForm ref="dialog" @submit="onSubmit">
+      <q-input
+        outlined
+        label="Name"
+        v-model="formData.name"
+        :autofocus="true"
+        :rules="[$rules.required()]"
+      />
+      <q-input
+        outlined
+        type="textarea"
+        label="description"
+        v-model="formData.description"
+        :autofocus="true"
+        :rules="[$rules.required()]"
+      />
+    </DialogForm>
+  </div>
 </template>
 
 <script setup lang="ts">
