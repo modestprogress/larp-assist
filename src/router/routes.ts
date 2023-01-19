@@ -129,6 +129,10 @@ const routes: RouteRecordRaw[] = [
         path: 'motds',
         component: () => import('pages/gm/MotdsPage.vue'),
       },
+      {
+        path: 'files',
+        component: () => import('pages/gm/FilesPage.vue'),
+      },
     ],
   },
 

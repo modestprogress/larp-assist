@@ -25,6 +25,7 @@
     <q-route-tab to="/gm/characters" icon="face" label="Characters" />
     <q-route-tab to="/gm/currency" icon="attach_money" label="Currency" />
     <q-route-tab to="/gm/divinations" icon="visibility" label="Divinations" />
+    <q-route-tab to="/gm/files" icon="file_open" label="Files" />
     <q-route-tab to="/gm/items" icon="backpack" label="Items" />
     <q-route-tab to="/gm/markets" icon="store" label="Markets" />
     <q-route-tab to="/gm/motds" icon="today" label="MOTDs" />

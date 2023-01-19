@@ -15,6 +15,7 @@
       wrap-cells
       row-key="id"
       binary-state-sort
+      v-model:pagination="paginationSettings"
     >
       <template v-slot:top>
         <div class="row title-row">
@@ -58,7 +59,7 @@
 
 <script setup lang="ts">
 // Vue
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 // export-to-csv
 import { ExportToCsv } from 'export-to-csv';
@@ -76,6 +77,13 @@ const emit = defineEmits(['delete', 'edit', 'add']);
 const columns = computed(() =>
   props.columns.concat({ name: 'actions', label: 'Action' })
 );
+
+const paginationSettings = ref({
+  page: 1,
+  rowsPerPage: 20,
+  sortBy: props.columns[0].field,
+  descending: true,
+});
 
 const onEdit = (row) => emit('edit', row);
 const onDelete = (row) => emit('delete', row);
@@ -97,7 +105,6 @@ const onExport = () => {
         })
     )
   );
-  console.dir(tableContents);
 
   const options = {
     filename: props.title + ' ' + new Date(),
