@@ -10,10 +10,10 @@ export const useFilesStore = defineStore('files', () => {
     ...useFirestoreCollection<File>('files', {
       map: (id, data) => ({
         id,
+        url: data.url,
         code: data.code,
         bucket: data.bucket,
-        filename: data.filename,
-        url: data.url,
+        path: data.path,
         common_name: data.common_name || '',
         common: data.common || false,
       }),
