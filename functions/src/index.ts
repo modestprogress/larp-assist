@@ -18,8 +18,6 @@ exports.onCreateUser = auth.user().onCreate(async (user) => {
     gm: false,
   };
 
-  info(`User created with `);
-
   await admin
     .firestore()
     .collection('users')

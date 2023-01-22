@@ -73,7 +73,7 @@ service cloud.firestore {
     function isUser(uid) {
       return request.auth.uid == uid;
     }
-
+    
     function isGm() {
       return isActivated() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.gm
     }
