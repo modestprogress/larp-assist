@@ -52,7 +52,6 @@ import {
 } from 'firebase/auth';
 import { defineComponent } from 'vue';
 import { useUserStore } from 'stores/user';
-import { useCharactersStore } from 'stores/characters';
 
 export default defineComponent({
   setup() {
@@ -61,11 +60,7 @@ export default defineComponent({
     };
   },
   data() {
-    const characterStore = useCharactersStore();
-    characterStore.refresh();
-
     return {
-      characterStore: characterStore,
       email: ref(),
       password: ref(),
       confirmPassword: ref(),

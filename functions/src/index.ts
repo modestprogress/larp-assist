@@ -7,18 +7,6 @@ import { info, warn } from 'firebase-functions/logger';
 
 admin.initializeApp();
 
-const toLogLine = (data: { [key: string]: any }) => {
-  return Object.entries(data)
-    .map(([key, value]) => {
-      if (value instanceof Timestamp) {
-        value = value.toDate();
-      }
-
-      return `${key}: ${value}`;
-    })
-    .join(', ');
-};
-
 exports.onCreateUser = auth.user().onCreate(async (user) => {
   const { uid, displayName, email } = user;
   const userData = {
