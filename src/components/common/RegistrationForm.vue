@@ -75,6 +75,10 @@ export default defineComponent({
         message: 'Attempting to register...',
       });
 
+      this.$q.loading.show({
+        message: 'Attempting to register...',
+      });
+
       let userCred: UserCredential;
       try {
         userCred = await createUserWithEmailAndPassword(
