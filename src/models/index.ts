@@ -29,7 +29,7 @@ export interface Item extends Model {
 export interface File extends Model {
   code: string;
   bucket: string;
-  filename: string;
+  path: string;
   url: string;
   common_name: string;
   common: boolean;

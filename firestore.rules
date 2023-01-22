@@ -48,12 +48,17 @@ service cloud.firestore {
     }
 
     match /characters/{characterId} {
-      allow read;
+      allow read: if isActivated();
       allow write: if isGm();
     }
 
     match /users/{userId} {
       allow read: if isActivated() || isUser(userId);
+      allow write: if isGm();
+    }
+
+    match /files/{fileId} {
+      allow read: if isActivated();
       allow write: if isGm();
     }
 
@@ -68,7 +73,7 @@ service cloud.firestore {
     function isUser(uid) {
       return request.auth.uid == uid;
     }
-
+    
     function isGm() {
       return isActivated() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.gm
     }

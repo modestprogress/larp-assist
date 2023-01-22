@@ -52,7 +52,7 @@ import {
 } from 'firebase/auth';
 import { defineComponent } from 'vue';
 import { useUserStore } from 'stores/user';
-import { useCharactersStore } from 'stores/characters';
+import { useQuasar } from 'quasar';
 
 export default defineComponent({
   setup() {
@@ -61,11 +61,7 @@ export default defineComponent({
     };
   },
   data() {
-    const characterStore = useCharactersStore();
-    characterStore.refresh();
-
     return {
-      characterStore: characterStore,
       email: ref(),
       password: ref(),
       confirmPassword: ref(),
@@ -76,6 +72,10 @@ export default defineComponent({
     async register() {
       const auth = getAuth();
 
+      this.$q.loading.show({
+        message: 'Attempting to register...',
+      });
+
       let userCred: UserCredential;
       try {
         userCred = await createUserWithEmailAndPassword(
@@ -84,6 +84,7 @@ export default defineComponent({
           this.password
         );
       } catch (error) {
+        this.$q.loading.hide();
         const messages = {
           'auth/weak-password': 'Password is too weak',
           'auth/email-already-in-use': 'Email already in use',
@@ -100,6 +101,8 @@ export default defineComponent({
       await this.store.update({
         name: this.name,
       });
+
+      this.$q.loading.hide();
 
       this.$router.push('/');
     },
