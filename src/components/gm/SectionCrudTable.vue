@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md">
+  <div>
     <CrudTable
       :columns="columns"
       :rows="sections"
@@ -26,13 +26,13 @@
       />
       <q-select
         outlined
-        :options="[SectionType.Inline, SectionType.Trap]"
+        :options="[SectionType.InlineType, SectionType.TrapType]"
         label="Type"
         v-model="formData.type"
         :rules="[$rules.required()]"
       />
       <SelectField
-        v-if="formData.type == SectionType.Trap"
+        v-if="formData.type == SectionType.TrapType"
         label="Trap"
         v-model="formData.trapId"
         :values_labels="trapNames"
@@ -71,13 +71,13 @@ const props = defineProps({
 const trapsById = inject<Map<string, Trap>>('trapsById');
 
 const trapNames = computed(() => {
-  const traps = Array.from(trapsById?.values() || []);
+  const traps = Array.from(trapsById.value?.values() || []);
 
   return new Map(traps.map((t) => [t.id, t.name]));
 });
 
 const displayText = (section: Section) => {
-  if (section.type == SectionType.Trap) {
+  if (section.type == SectionType.TrapType) {
     return trapsById.value.get(section.trapId).name;
   }
 
@@ -155,7 +155,7 @@ const onAdd = () => {
   }
 
   return onEdit({
-    type: SectionType.Inline,
+    type: SectionType.InlineType,
     sectionIdx: lastSectionIdx + 1,
     chapterIdx: lastChapterIdx,
   });

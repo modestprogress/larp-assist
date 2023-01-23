@@ -1,11 +1,12 @@
 <template>
-  <div class="text-h6">
-    {{ book.name }}
+  <div class="q-pa-md">
+    <div class="text-h6">
+      {{ book?.name }}
+    </div>
+    <SectionCrudTable class="q-mb-md" :bookId="book?.id" />
+    <div class="text-h6">Preview</div>
+    <BookReader :bookId="book?.id" />
   </div>
-  <SectionCrudTable :bookId="book.id" />
-  <TrapCrudTable />
-  <div class="text-h6">Preview</div>
-  <BookReader :bookId="book.id" />
 </template>
 
 <script setup lang="ts">
@@ -15,7 +16,6 @@ import { useRoute } from 'vue-router';
 
 // Ours - Components
 import SectionCrudTable from 'components/gm/SectionCrudTable.vue';
-import TrapCrudTable from 'components/gm/TrapCrudTable.vue';
 import BookReader from 'components/common/BookReader.vue';
 
 // Ours - Store

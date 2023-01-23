@@ -71,6 +71,9 @@ export default defineComponent({
   methods: {
     async register() {
       const auth = getAuth();
+      this.$q.loading.show({
+        message: 'Attempting to register...',
+      });
 
       this.$q.loading.show({
         message: 'Attempting to register...',
