@@ -1,7 +1,6 @@
 import { test, expect, describe, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { Quasar } from 'quasar';
-import { installQuasar } from '@quasar/quasar-app-extension-testing-unit-vitest';
 import { createTestingPinia } from '@pinia/testing';
 import BookLookup from 'src/components/common/BookLookup.vue';
 import { useUserStore, getSignedOutUser } from 'src/stores/user';
@@ -9,7 +8,6 @@ import { useBooksStore } from 'src/stores/books';
 import { Book } from 'src/models/books';
 import { installFirebase } from 'test/vitest/install-firebase';
 
-installQuasar();
 installFirebase();
 
 const pinia = createTestingPinia({ createSpy: vi.fn() });
