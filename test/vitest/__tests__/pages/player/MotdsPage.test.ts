@@ -1,7 +1,6 @@
 import { test, expect, describe, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { Quasar } from 'quasar';
-import { installQuasar } from '@quasar/quasar-app-extension-testing-unit-vitest';
 import { createTestingPinia } from '@pinia/testing';
 
 import PlayerMotdsPage from 'src/pages/player/MotdsPage.vue';
@@ -12,7 +11,6 @@ import { Motd } from 'src/models';
 
 import { installFirebase } from 'test/vitest/install-firebase';
 
-installQuasar();
 installFirebase();
 
 const pinia = createTestingPinia({ createSpy: vi.fn() });

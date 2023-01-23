@@ -12,6 +12,7 @@ import { computed } from 'vue';
 // Ours - Stores
 import { useMotdsStore } from 'stores/motds';
 import { useUserStore } from 'stores/user';
+import { useFilesStore } from 'stores/files';
 
 // Ours - Components
 import SimpleCard from 'components/common/SimpleCard.vue';
@@ -21,6 +22,11 @@ const motdsStore = useMotdsStore();
 motdsStore.refresh();
 
 const userStore = useUserStore();
+
+const filesStore = useFilesStore();
+filesStore.refresh();
+
+const files = computed(() => filesStore.items);
 
 const motds = computed(() =>
   motdsStore.items.filter(
