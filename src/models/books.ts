@@ -1,8 +1,8 @@
 import { Model } from 'src/models';
 
 export enum SectionType {
-  Trap = 'trap',
-  Inline = 'inline',
+  TrapType = 'trap',
+  InlineType = 'inline',
 }
 
 export interface Section extends Model {
