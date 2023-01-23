@@ -21,6 +21,8 @@
     "export-to-csv": "^0.2.1",
     "firebase": "^9.14.0",
     "firebase-auth": "^0.1.2",
+    "lodash": "^4.17.21",
+    "lodash-es": "^4.17.21",
     "pinia": "^2.0.11",
     "quasar": "^2.6.0",
     "vue": "^3.0.0",

@@ -15,6 +15,7 @@
       <div class="row lookup-form">
         <q-input
           outlined
+          id="bookCode"
           v-model="bookCode"
           :rules="[validateCode]"
           label="Book Code"

@@ -76,7 +76,7 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/GMLayout.vue'),
     beforeEnter: redirectIfNotReady,
     children: [
-      { path: '', redirect: '/gm/characters' },
+      { path: '', redirect: '/gm/books' },
       {
         path: 'books/:id',
         component: () => import('pages/gm/BookPage.vue'),
