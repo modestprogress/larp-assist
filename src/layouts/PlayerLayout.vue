@@ -12,6 +12,7 @@
     <q-route-tab to="/player/library" icon="book" label="Library" />
     <q-route-tab to="/player/currency" icon="attach_money" label="Currency" />
   </q-tabs>
+  <router-view />
 </template>
 
 <style scoped lang="scss">

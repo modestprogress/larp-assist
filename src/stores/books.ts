@@ -14,7 +14,6 @@ export const useBooksStore = defineStore('books', () => {
         location: data.location,
         code: data.code,
         description: data.description,
-        chapters: data.chapters || [],
         id: id,
       }),
     }),

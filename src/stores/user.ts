@@ -13,7 +13,7 @@ import { getFunctions, httpsCallable } from 'firebase/functions';
 // Ours
 import { useCharactersStore } from './characters';
 
-function getSignedOutUser() {
+export const getSignedOutUser = () => {
   return {
     isLoggedIn: false,
     id: '',
@@ -21,7 +21,7 @@ function getSignedOutUser() {
     characterId: null,
     isActivated: false,
   };
-}
+};
 
 export const useUserStore = defineStore('user', {
   state: () => ({
