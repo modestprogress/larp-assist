@@ -1,7 +1,10 @@
 <template>
-  <SimpleCard>
-    <CurrencyList />
-  </SimpleCard>
+  <CurrencyList
+    :currencies="currencies"
+    :markets="markets"
+    :characterNames="characterNames"
+    :currencyNames="currencyNames"
+  />
 </template>
 
 <script setup lang="ts">
@@ -17,27 +20,30 @@ import { useMarketsStore } from 'stores/markets';
 import { useCharactersStore } from 'stores/characters';
 
 import { useUserStore } from 'stores/user';
-import SimpleCard from 'components/common/SimpleCard.vue';
 
 const userStore = useUserStore();
 
 const currenciesStore = useCurrenciesStore();
 currenciesStore.refresh();
+
 const currencies = computed(() =>
   currenciesStore.items.filter((currency) =>
     currency.characterIds.includes(userStore.user.characterId)
   )
 );
-provide('currencies', currencies);
-provide('currencyNames', computed(currenciesStore.getCurrencyNames));
+const currencyNames = computed(() => currenciesStore.getCurrencyNames());
 
 const marketsStore = useMarketsStore();
 marketsStore.refresh();
-provide(
-  'markets',
-  computed(() => marketsStore.items)
+
+const markets = computed(() =>
+  marketsStore.items.filter((market) =>
+    market.characterIds.includes(userStore.user.characterId)
+  )
 );
 
-const characterStore = useCharactersStore();
-provide('characterNames', computed(characterStore.getCharacterNames));
+const charactersStore = useCharactersStore();
+charactersStore.refresh();
+
+const characterNames = computed(() => charactersStore.getCharacterNames());
 </script>
