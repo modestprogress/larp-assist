@@ -35,9 +35,9 @@ export default boot(({ app, router }) => {
   const functions = getFunctions(firebaseApp);
 
   if (process.env.DEV) {
-    connectFirestoreEmulator(firestore, 'localhost', 8080);
-    connectStorageEmulator(storage, 'localhost', 9199);
-    connectAuthEmulator(auth, 'http://localhost:9099');
+    //connectFirestoreEmulator(firestore, 'localhost', 8080);
+    //connectStorageEmulator(storage, 'localhost', 9199);
+    //connectAuthEmulator(auth, 'http://localhost:9099');
     connectFunctionsEmulator(functions, 'localhost', 5001);
   }
 

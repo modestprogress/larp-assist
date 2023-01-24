@@ -18,8 +18,6 @@ exports.onCreateUser = auth.user().onCreate(async (user) => {
     gm: false,
   };
 
-  info(`User created with `);
-
   await admin
     .firestore()
     .collection('users')
@@ -27,27 +25,17 @@ exports.onCreateUser = auth.user().onCreate(async (user) => {
     .set(userData, { merge: true });
 });
 
-exports.sync = https.onRequest(async (_, resp) => {
-  // Get all users from firebase auth
-  const users = await admin.auth().listUsers();
+exports.syncFiles = https.onCall(async (data, context) => {
+  if (!context.auth) {
+    warn('Unauthenticated user called endpoint syncFiles');
+    throw new https.HttpsError(
+      'unauthenticated',
+      'The function must be called while authenticated.'
+    );
+  }
 
   // Start a batch of writes
   const batch = admin.firestore().batch();
-
-  // Add them to firestore
-  users.users.forEach((user) => {
-    // Get Firebase Auth user properties
-    const { uid, displayName, email } = user;
-    const userData = {
-      uid,
-      email,
-      name: displayName || 'unknown',
-    };
-
-    const userRef = admin.firestore().collection('users').doc(uid);
-
-    batch.set(userRef, userData, { merge: true });
-  });
 
   // Retrieve the default bucket
   const bucket = admin.storage().bucket();
@@ -90,7 +78,7 @@ exports.sync = https.onRequest(async (_, resp) => {
   // Commit the pending writes
   await batch.commit();
 
-  resp.send({ success: true });
+  return { success: true };
 });
 
 exports.updateUser = https.onCall(async (data, context) => {
@@ -112,6 +100,7 @@ exports.updateUser = https.onCall(async (data, context) => {
     }
   });
 
+  await admin.firestore().collection('users').doc(uid).set({}, { merge: true });
   await admin.firestore().collection('users').doc(uid).update(userData);
   info('User updated', userData);
 

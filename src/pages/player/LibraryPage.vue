@@ -14,6 +14,6 @@ const files = computed(() => filesStore.items);
 </script>
 
 <template>
+  <FileLookup class="q-mb-md" :files="files" />
   <BookLookup />
-  <FileLookup :files="files" />
 </template>
