@@ -1,5 +1,6 @@
 <template>
   <CurrencyList
+    :character="character"
     :currencies="currencies"
     :markets="markets"
     :characterNames="characterNames"
@@ -18,7 +19,6 @@ import CurrencyList from 'components/player/CurrencyList.vue';
 import { useCurrenciesStore } from 'stores/currencies';
 import { useMarketsStore } from 'stores/markets';
 import { useCharactersStore } from 'stores/characters';
-
 import { useUserStore } from 'stores/user';
 
 const userStore = useUserStore();
@@ -46,4 +46,9 @@ const charactersStore = useCharactersStore();
 charactersStore.refresh();
 
 const characterNames = computed(() => charactersStore.getCharacterNames());
+const character = computed(() =>
+  charactersStore.items.find(
+    (character) => character.id === userStore.user.characterId
+  )
+);
 </script>
