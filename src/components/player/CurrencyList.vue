@@ -36,13 +36,20 @@
           label="Amount"
           class="col-3"
         />
-        <CurrencySelect
+        <SelectField
           label="Currency"
-          v-model="transferCurrency"
           class="col"
+          v-model="transferCurrency"
+          :values_labels="currencyNames"
+          hint="The currency the market uses"
         />
       </div>
-      <CharacterSelect label="To" v-model="transferTo" />
+      <SelectField
+        label="To"
+        v-model="transferTo"
+        :values_labels="characterNames"
+        hint="Who can see and shop at the markets"
+      />
       <q-btn color="primary" label="Transfer" type="submit" class="q-mt-lg" />
     </div>
   </q-form>
@@ -50,11 +57,17 @@
 
 <script setup lang="ts">
 // Vue
-import { computed, ref, inject } from 'vue';
+import { computed, ref } from 'vue';
 
 // Ours - Components
-//import CurrencySelect from 'components/common/CurrencySelect.vue';
-//import CharacterSelect from 'components/common/CharacterSelect.vue';
+import SelectField from 'components/common/SelectField.vue';
+
+const props = defineProps([
+  'characterNames',
+  'currencyNames',
+  'currencies',
+  'markets',
+]);
 
 const onTransfer = () => {
   console.log('Transfering!');
@@ -72,10 +85,9 @@ const transferAmount = ref(0);
 const transferTo = ref();
 const transferCurrency = ref();
 
-const markets = inject('markets');
 const marketsByCurrency = computed(() => {
   const byCurrency = new Map();
-  markets.value.forEach((market) => {
+  props.markets.forEach((market) => {
     const currencyId = market.currencyId;
     const siblingMarkets = byCurrency.get(currencyId) || [];
     byCurrency.set(currencyId, siblingMarkets.concat(market));
@@ -84,9 +96,8 @@ const marketsByCurrency = computed(() => {
   return byCurrency;
 });
 
-const currencies = inject('currencies');
 const currenciesWithMarkets = computed(() => {
-  return currencies.value.map((currency) => ({
+  return props.currencies.map((currency) => ({
     name: currency.name,
     id: currency.id,
     amount: 0,

@@ -11,9 +11,21 @@ const filesStore = useFilesStore();
 filesStore.refresh();
 
 const files = computed(() => filesStore.items);
+const commonFiles = computed(() => files.value.filter((file) => file.common));
+
+const download = (file) => {
+  filesStore.downloadFile(file);
+};
 </script>
 
 <template>
   <FileLookup class="q-mb-md" :files="files" />
-  <BookLookup />
+  <BookLookup class="q-mb-md" />
+  <q-list>
+    <q-item v-for="file in commonFiles" :key="file.id">
+      <q-btn @click="download(file)" ouline-color="primary">
+        {{ file.common_name }}
+      </q-btn>
+    </q-item>
+  </q-list>
 </template>
