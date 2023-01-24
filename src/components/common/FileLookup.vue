@@ -30,6 +30,8 @@ import { defineProps, ref, computed } from 'vue';
 
 import { File } from 'src/models';
 
+import { useFilesStore } from 'src/stores/files';
+
 const props = defineProps({
   files: {
     type: Array<File>,
@@ -55,7 +57,9 @@ const validateFileCode = (value: string) => {
 
 const fileCode = ref('');
 
+const filesStore = useFilesStore();
+
 const download = () => {
-  window.open(file.value.url, '_blank');
+  filesStore.downloadFile(file.value);
 };
 </script>

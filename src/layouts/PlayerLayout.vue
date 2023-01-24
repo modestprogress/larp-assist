@@ -28,6 +28,7 @@
 .page {
   max-width: 768px;
   margin: auto;
+  padding: 0 16px;
 }
 </style>
 
