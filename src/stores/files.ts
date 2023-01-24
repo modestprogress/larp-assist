@@ -1,8 +1,15 @@
 // Pinia data store
 import { defineStore } from 'pinia';
 
-// Firestore Functions
+// Firebase Functions
 import { getFunctions, httpsCallable } from 'firebase/functions';
+
+// Firebase Storage
+import {
+  getStorage,
+  ref as storageRef,
+  getDownloadURL,
+} from 'firebase/storage';
 
 // Ours
 import { useFirestoreCollection } from 'stores/firestore';
@@ -25,6 +32,12 @@ export const useFilesStore = defineStore('files', () => {
       const functions = getFunctions();
       const call = httpsCallable(functions, 'syncFiles');
       await call();
+    },
+    downloadFile: async (file: File) => {
+      const storage = getStorage();
+      const ref = storageRef(storage, file.path);
+      const url = await getDownloadURL(ref);
+      window.open(url, '_blank');
     },
   };
 });
