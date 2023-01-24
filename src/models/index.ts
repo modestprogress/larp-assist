@@ -10,7 +10,6 @@ export interface User extends Model {
   isActivated: boolean;
   name: string;
   characterId: string;
-  code: string;
   notes: string;
   email: string;
 }
@@ -37,8 +36,8 @@ export interface File extends Model {
 
 export interface Character extends Model {
   name: string;
-  code: string;
   notes: string;
+  balances: { [currencyId: string]: number };
 }
 
 export interface Market extends Model {

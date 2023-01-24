@@ -63,6 +63,7 @@ import { computed, ref } from 'vue';
 import SelectField from 'components/common/SelectField.vue';
 
 const props = defineProps([
+  'character',
   'characterNames',
   'currencyNames',
   'currencies',
@@ -100,7 +101,7 @@ const currenciesWithMarkets = computed(() => {
   return props.currencies.map((currency) => ({
     name: currency.name,
     id: currency.id,
-    amount: 0,
+    amount: (props.character.balances || {})[currency.id] || 0,
     markets: marketsByCurrency.value.get(currency.id) || [],
   }));
 });
