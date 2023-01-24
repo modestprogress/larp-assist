@@ -45,7 +45,7 @@
   </div>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 .lookup-form {
   button {
     height: 56px;

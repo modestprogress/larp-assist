@@ -1,6 +1,7 @@
 <template>
-  <q-form @submit.prevent="download">
+  <q-form class="row" @submit.prevent="download">
     <q-input
+      class="col"
       v-model="fileCode"
       label="File Code"
       dark
@@ -9,6 +10,7 @@
       :rules="[validateFileCode]"
     />
     <q-btn
+      class="col-auto q-ml-sm"
       type="submit"
       color="primary"
       label="Download"
@@ -16,6 +18,12 @@
     />
   </q-form>
 </template>
+
+<style scoped>
+button {
+  height: 56px;
+}
+</style>
 
 <script setup lang="ts">
 import { defineProps, ref, computed } from 'vue';

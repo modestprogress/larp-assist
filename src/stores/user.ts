@@ -18,7 +18,7 @@ export const getSignedOutUser = () => {
     isLoggedIn: false,
     id: '',
     gm: false,
-    characterId: null,
+    characterId: '',
     isActivated: false,
   };
 };

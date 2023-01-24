@@ -1,36 +1,34 @@
 <template>
-  <div class="q-pa-md">
-    <CrudTable
-      title="Files"
-      :columns="columns"
-      :rows="files"
-      :loading="loading"
-      :hideAdd="true"
-      :hideDelete="true"
-      @edit="onEdit"
+  <CrudTable
+    title="Files"
+    :columns="columns"
+    :rows="files"
+    :loading="loading"
+    :hideAdd="true"
+    :hideDelete="true"
+    @edit="onEdit"
+  />
+
+  <DialogForm ref="dialog" @submit="onSubmit">
+    <q-input
+      outlined
+      label="Code"
+      v-model="formData.code"
+      :rules="[$rules.required()]"
+      class="q-mb-md"
+      hint="The code used to lookup the file"
     />
 
-    <DialogForm ref="dialog" @submit="onSubmit">
-      <q-input
-        outlined
-        label="Code"
-        v-model="formData.code"
-        :rules="[$rules.required()]"
-        class="q-mb-md"
-        hint="The code used to lookup the file"
-      />
+    <q-checkbox v-model="formData.common" label="Common" />
 
-      <q-checkbox v-model="formData.common" label="Common" />
-
-      <q-input
-        v-model="formData.common_name"
-        hint="The quick-link name of the file (common only)"
-        label="Common Name"
-        :disable="!formData.common"
-        :rules="[formData.common || $rules.required()]"
-      />
-    </DialogForm>
-  </div>
+    <q-input
+      v-model="formData.common_name"
+      hint="The quick-link name of the file (common only)"
+      label="Common Name"
+      :disable="!formData.common"
+      :rules="[formData.common || $rules.required()]"
+    />
+  </DialogForm>
 </template>
 
 <script setup lang="ts">
