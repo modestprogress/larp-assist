@@ -30,20 +30,21 @@
   <div class="text-h6 q-mb-md">Transfer</div>
   <q-form @submit="transfer">
     <div class="col">
-      <div class="row">
+      <div class="row q-mb-md">
         <q-input
           outlined
           v-model="transferAmount"
           :rules="[validateAmount]"
           label="Amount"
-          class="col-3"
+          class="col-3 transfer-amount"
         />
         <SelectField
+          outlined
           label="Currency"
           class="col"
           v-model="transferCurrency"
           :values_labels="currencyNames"
-          hint="The currency the market uses"
+          hint="The currency to transfer"
         />
       </div>
       <SelectField
@@ -128,5 +129,9 @@ const transfer = async () => {
 <style lang="scss">
 .currency-name {
   font-size: 1.2rem;
+}
+
+.transfer-amount {
+  margin-right: 1rem;
 }
 </style>

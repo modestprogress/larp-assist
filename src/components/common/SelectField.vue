@@ -1,6 +1,6 @@
 <template>
   <q-select
-    filled
+    outlined
     color="secondary"
     emit-value
     map-options

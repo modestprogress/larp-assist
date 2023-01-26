@@ -9,7 +9,7 @@
         <div>{{ transaction.amount }} {{ transaction.currency?.name }}</div>
         <div>{{ transaction.time }}</div>
       </div>
-      <q-separator inset />
+      <q-separator inset color="accent" />
       <div class="transaction__notes">
         {{ transaction.notes }}
       </div>
@@ -17,7 +17,7 @@
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .container {
   display: flex;
   flex-direction: column;
@@ -31,7 +31,7 @@
   width: 100%;
   height: 100%;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 2px solid $accent;
   border-radius: 5px;
   margin-bottom: 10px;
 }

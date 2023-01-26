@@ -9,6 +9,8 @@ admin.initializeApp();
 
 const getTime = () => Timestamp.now().toMillis();
 
+const success = (data: any) => ({ data, status: 'success' });
+
 exports.onCreateUser = auth.user().onCreate(async (user) => {
   const { uid, displayName, email } = user;
   const userData = {
@@ -108,36 +110,44 @@ exports.transferCurrency = https.onCall(async (data, context) => {
 
   const currencyName = currency.data()?.name;
 
-  await admin.firestore().runTransaction(async (tx) => {
-    tx.update(admin.firestore().collection('characters').doc(characterId), {
+  await admin
+    .firestore()
+    .collection('characters')
+    .doc(characterId)
+    .update({
       [`balances.${currencyId}`]: admin.firestore.FieldValue.increment(-amount),
     });
 
-    tx.update(admin.firestore().collection('characters').doc(to), {
+  await admin
+    .firestore()
+    .collection('characters')
+    .doc(characterId)
+    .update({
       [`balances.${currencyId}`]: destBalance + amount,
     });
 
-    const characterName = characterData.name;
-    const toCharacterName = toCharacterData.name;
-    const notes = `${characterName} transferred ${amount} ${currencyName} to ${toCharacterName}`;
+  const characterName = characterData.name;
+  const toCharacterName = toCharacterData.name;
+  const notes = `${characterName} transferred ${amount} ${currencyName} to ${toCharacterName}`;
 
-    // Add transaction logs for both characters
-    await admin.firestore().collection('transactions').add({
-      characterId,
-      currencyId,
-      notes,
-      amount: -amount,
-      createdAtEpoch: getTime(),
-    });
-
-    await admin.firestore().collection('transactions').add({
-      currencyId,
-      notes,
-      characterId: to,
-      amount: amount,
-      createdAtEpoch: getTime(),
-    });
+  // Add transaction logs for both characters
+  await admin.firestore().collection('transactions').add({
+    characterId,
+    currencyId,
+    notes,
+    amount: -amount,
+    createdAtEpoch: getTime(),
   });
+
+  await admin.firestore().collection('transactions').add({
+    currencyId,
+    notes,
+    characterId: to,
+    amount: amount,
+    createdAtEpoch: getTime(),
+  });
+
+  return success({ message: 'Transfer successful' });
 });
 
 exports.onTransaction = exports.myFunction = firestore
@@ -199,84 +209,81 @@ exports.purchase = https.onCall(async (data, context) => {
 
   const { marketId, itemId, characterId } = data;
 
-  await admin.firestore().runTransaction(async (tx) => {
-    const characterRef = admin
-      .firestore()
-      .collection('characters')
-      .doc(characterId);
+  const character = await admin
+    .firestore()
+    .collection('characters')
+    .doc(characterId)
+    .get();
 
-    const character = await tx.get(characterRef);
+  if (!character.exists) {
+    throw new https.HttpsError(
+      'not-found',
+      `Character ${characterId} not found`
+    );
+  }
 
-    if (!character.exists) {
-      throw new https.HttpsError(
-        'not-found',
-        `Character ${characterId} not found`
-      );
-    }
+  const characterData = character.data() || {};
 
-    const characterData = character.data() || {};
+  const market = await admin
+    .firestore()
+    .collection('markets')
+    .doc(marketId)
+    .get();
 
-    const marketRef = admin.firestore().collection('markets').doc(marketId);
-    const market = await tx.get(marketRef);
+  if (!market.exists) {
+    throw new https.HttpsError('not-found', `Market ${marketId} not found`);
+  }
 
-    if (!market.exists) {
-      throw new https.HttpsError('not-found', `Market ${marketId} not found`);
-    }
+  const marketData = market.data() || {};
 
-    const marketData = market.data() || {};
+  const item = await admin.firestore().collection('items').doc(itemId).get();
 
-    const itemRef = admin.firestore().collection('items').doc(itemId);
-    const item = await tx.get(itemRef);
+  if (!item.exists) {
+    throw new https.HttpsError('not-found', `Item ${itemId} not found`);
+  }
 
-    if (!item.exists) {
-      throw new https.HttpsError('not-found', `Item ${itemId} not found`);
-    }
+  const { name: itemName } = item.data() || {};
 
-    const itemData = item.data() || {};
+  const listing = marketData.listings[itemId];
+  if (!listing) {
+    throw new https.HttpsError('not-found', `Item ${itemId} not listed`);
+  }
 
-    const listing = marketData.listings[itemId];
-    if (!listing) {
-      throw new https.HttpsError('not-found', `Item ${itemId} not listed`);
-    }
+  if (listing.quantity < 1) {
+    throw new https.HttpsError('failed-precondition', 'Item is out of stock');
+  }
 
-    if (listing.quantity < 1) {
-      throw new https.HttpsError('failed-precondition', 'Item is out of stock');
-    }
+  // Check if character as enough money
+  const cost = listing.cost;
+  const { currencyId, name: marketName } = marketData;
+  const balance = (characterData.balances || {})[currencyId] || 0;
 
-    // Check if character as enough money
-    const cost = listing.cost;
-    const currencyId = marketData.currencyId;
-    const balance = (characterData.balances || {})[currencyId] || 0;
+  if (balance < cost) {
+    throw new https.HttpsError('failed-precondition', 'Insufficient funds');
+  }
 
-    if (balance < cost) {
-      throw new https.HttpsError('failed-precondition', 'Insufficient funds');
-    }
+  // Create transaction
+  const transactionData = {
+    characterId,
+    currencyId,
+    amount: -cost,
+    createdAtEpoch: getTime(),
+    notes: `Purchased ${itemName} from ${marketName}`,
+  };
 
-    const { name: marketName } = marketData;
-    const { name: itemName } = itemData;
-
-    // Create transaction
-    const transactionData = {
-      characterId,
-      currencyId,
-      amount: -cost,
-      createdAtEpoch: Timestamp.now(),
-      notes: `Purchased ${itemName} from ${marketName}`,
-    };
-
-    await admin.firestore().collection('transactions').add(transactionData);
-
-    // Update character's balance
-    await character.ref.update({
-      [`balances.${currencyId}`]: admin.firestore.FieldValue.increment(-cost),
-    });
-
-    // Update market.listings available
-    await market.ref.update({
-      // [`listings.${listingId}.available`]: admin.firestore.FieldValue.increment(-1),
-      [`listings.${itemId}.available`]: parseInt(listing.available) - 1,
-    });
+  admin.firestore().collection('transactions').add(transactionData);
+  // Update character's balance
+  await character.ref.update({
+    [`balances.${currencyId}`]: admin.firestore.FieldValue.increment(-cost),
   });
+
+  // Update market.listings available
+  await market.ref.update({
+    // [`listings.${listingId}.available`]: admin.firestore.FieldValue.increment(-1),
+    [`listings.${itemId}.available`]: parseInt(listing.available) - 1,
+  });
+
+  return success({ message: 'Purchase successful' });
 });
 
 exports.syncFiles = https.onCall(async (data, context) => {
@@ -332,7 +339,7 @@ exports.syncFiles = https.onCall(async (data, context) => {
   // Commit the pending writes
   await batch.commit();
 
-  return { success: true };
+  return success({ message: 'Files synced' });
 });
 
 exports.updateUser = https.onCall(async (data, context) => {
@@ -366,5 +373,5 @@ exports.updateUser = https.onCall(async (data, context) => {
   // Update the user in Firebase Auth
   await admin.auth().updateUser(uid, userData);
 
-  return { success: true };
+  return success({ message: 'User updated' });
 });
