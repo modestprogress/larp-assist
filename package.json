@@ -18,6 +18,7 @@
         "@vuelidate/validators": "^2.0.0",
         "@vueuse/core": "^9.6.0",
         "axios": "^0.21.1",
+        "dayjs": "^1.11.7",
         "export-to-csv": "^0.2.1",
         "firebase": "^9.14.0",
         "firebase-auth": "^0.1.2",

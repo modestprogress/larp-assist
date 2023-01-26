@@ -21,6 +21,11 @@ export const useCurrenciesStore = defineStore('currencies', () => {
         .filter((currency) => currency.characterIds.includes(characterId))
         .map((currency) => currency.name);
     },
+    getCurrency: (currencyId: string) => {
+      return collection.items.value.find(
+        (currency) => currency.id === currencyId
+      );
+    },
     getCurrencyNames: () =>
       new Map<string, string>(
         collection.items.value.map(({ id, name }) => [id, name])

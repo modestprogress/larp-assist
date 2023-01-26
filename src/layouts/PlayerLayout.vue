@@ -12,6 +12,11 @@
       />
       <q-route-tab to="/player/library" icon="book" label="Library" />
       <q-route-tab to="/player/currency" icon="attach_money" label="Currency" />
+      <q-route-tab
+        to="/player/transactions"
+        icon="dynamic_feed"
+        label="Ledger"
+      />
     </q-tabs>
     <router-view />
   </div>

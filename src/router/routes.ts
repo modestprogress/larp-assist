@@ -62,6 +62,10 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/player/DivinationsPage.vue'),
       },
       {
+        path: 'transactions',
+        component: () => import('pages/player/TransactionsPage.vue'),
+      },
+      {
         path: 'divinations',
         component: () => import('pages/player/DivinationsPage.vue'),
       },
