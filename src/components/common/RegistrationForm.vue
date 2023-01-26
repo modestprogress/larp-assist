@@ -52,7 +52,6 @@ import {
 } from 'firebase/auth';
 import { defineComponent } from 'vue';
 import { useUserStore } from 'stores/user';
-import { useQuasar } from 'quasar';
 
 export default defineComponent({
   setup() {

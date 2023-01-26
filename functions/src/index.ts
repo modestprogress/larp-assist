@@ -7,6 +7,8 @@ import { info, warn } from 'firebase-functions/logger';
 
 admin.initializeApp();
 
+const getTime = () => Timestamp.now().toMillis();
+
 exports.onCreateUser = auth.user().onCreate(async (user) => {
   const { uid, displayName, email } = user;
   const userData = {
@@ -26,70 +28,114 @@ exports.onCreateUser = auth.user().onCreate(async (user) => {
 });
 
 exports.transferCurrency = https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new https.HttpsError(
+      'unauthenticated',
+      'The function must be called while authenticated.'
+    );
+  }
+
   const { amount, currencyId, to } = data;
+
+  if (amount < 0) {
+    throw new https.HttpsError('invalid-argument', 'Amount must be positive');
+  }
+
   const { uid } = context.auth;
 
+  const user = await admin.firestore().collection('users').doc(uid).get();
+  if (!user.exists) {
+    throw new https.HttpsError('not-found', 'User not found');
+  }
+
+  const userData = user.data() || {};
+
+  const { characterId } = userData;
+  if (!characterId) {
+    throw new https.HttpsError(
+      'not-found',
+      'Transfer source (user) not associated with character'
+    );
+  }
+
+  const character = await admin
+    .firestore()
+    .collection('characters')
+    .doc(characterId)
+    .get();
+
+  if (!character.exists) {
+    throw new https.HttpsError('not-found', 'Source character not found');
+  }
+
+  const characterData = character.data() || {};
+  const sourceBalances = characterData.balances || {};
+  const sourceBalance = sourceBalances[currencyId] || 0;
+  if (sourceBalance < amount) {
+    throw new https.HttpsError(
+      'failed-precondition',
+      'Insufficient (source) funds'
+    );
+  }
+
+  const toCharacter = await admin
+    .firestore()
+    .collection('characters')
+    .doc(to)
+    .get();
+
+  if (!toCharacter.exists) {
+    throw new https.HttpsError('not-found', 'Destination character not found');
+  }
+  const toCharacterData = toCharacter.data() || {};
+  const destBalance = toCharacterData.balances[currencyId] || 0;
+
+  if (sourceBalance < amount) {
+    throw new https.HttpsError(
+      'failed-precondition',
+      'Insufficient (source) funds'
+    );
+  }
+
+  const currency = await admin
+    .firestore()
+    .collection('currencies')
+    .doc(currencyId)
+    .get();
+  if (!currency.exists) {
+    throw new https.HttpsError('not-found', 'Currency not found');
+  }
+
+  const currencyName = currency.data()?.name;
+
   await admin.firestore().runTransaction(async (tx) => {
-    const user = await admin.firestore().collection('users').doc(uid).get();
-
-    if (amount < 0) {
-      throw new https.HttpsError('invalid-argument', 'Amount must be positive');
-    }
-
-    if (!user.exists) {
-      throw new https.HttpsError('not-found', 'User not found');
-    }
-
-    const userData = user.data() || {};
-
-    if (!userData.isActivated) {
-      throw new https.HttpsError('unauthenticated', 'User is not activated');
-    }
-
-    const characterId = userData.characterId;
-    if (!characterId) {
-      throw new https.HttpsError(
-        'not-found',
-        'Transfer source (user) not associated with character'
-      );
-    }
-
-    const characterRef = admin
-      .firestore()
-      .collection('characters')
-      .doc(characterId);
-
-    const character = await tx.get(characterRef);
-    if (!character.exists) {
-      throw new https.HttpsError('not-found', 'Source character not found');
-    }
-
-    const toCharacterRef = admin.firestore().collection('characters').doc(to);
-
-    const toCharacter = await tx.get(toCharacterRef);
-    if (!toCharacter.exists) {
-      throw new https.HttpsError(
-        'not-found',
-        'Destination character not found'
-      );
-    }
-
-    const characterData = character.data() || {};
-    const sourceBalances = characterData.balances || {};
-    const sourceBalance = sourceBalances[currencyId] || 0;
-    if (sourceBalance < amount) {
-      throw new https.HttpsError(
-        'failed-precondition',
-        'Insufficient (source) funds'
-      );
-    }
-
-    await toCharacter.ref.update({
-      [`balances.${currencyId}`]: admin.firestore.FieldValue.increment(amount),
+    tx.update(admin.firestore().collection('characters').doc(characterId), {
+      [`balances.${currencyId}`]: admin.firestore.FieldValue.increment(-amount),
     });
 
-    await character.ref.update({
-      [`balances.${currencyId}`]: admin.firestore.FieldValue.increment(-amount),
+    tx.update(admin.firestore().collection('characters').doc(to), {
+      [`balances.${currencyId}`]: destBalance + amount,
+    });
+
+    const characterName = characterData.name;
+    const toCharacterName = toCharacterData.name;
+    const notes = `${characterName} transferred ${amount} ${currencyName} to ${toCharacterName}`;
+
+    // Add transaction logs for both characters
+    await admin.firestore().collection('transactions').add({
+      characterId,
+      currencyId,
+      notes,
+      amount: -amount,
+      createdAtEpoch: getTime(),
+    });
+
+    await admin.firestore().collection('transactions').add({
+      currencyId,
+      notes,
+      characterId: to,
+      amount: amount,
+      createdAtEpoch: getTime(),
     });
   });
 });
@@ -142,6 +188,96 @@ exports.onTransaction = exports.myFunction = firestore
       characterRef.update({ balances: balances });
     });
   });
+
+exports.purchase = https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new https.HttpsError(
+      'unauthenticated',
+      'The function must be called while authenticated.'
+    );
+  }
+
+  const { marketId, itemId, characterId } = data;
+
+  await admin.firestore().runTransaction(async (tx) => {
+    const characterRef = admin
+      .firestore()
+      .collection('characters')
+      .doc(characterId);
+
+    const character = await tx.get(characterRef);
+
+    if (!character.exists) {
+      throw new https.HttpsError(
+        'not-found',
+        `Character ${characterId} not found`
+      );
+    }
+
+    const characterData = character.data() || {};
+
+    const marketRef = admin.firestore().collection('markets').doc(marketId);
+    const market = await tx.get(marketRef);
+
+    if (!market.exists) {
+      throw new https.HttpsError('not-found', `Market ${marketId} not found`);
+    }
+
+    const marketData = market.data() || {};
+
+    const itemRef = admin.firestore().collection('items').doc(itemId);
+    const item = await tx.get(itemRef);
+
+    if (!item.exists) {
+      throw new https.HttpsError('not-found', `Item ${itemId} not found`);
+    }
+
+    const itemData = item.data() || {};
+
+    const listing = marketData.listings[itemId];
+    if (!listing) {
+      throw new https.HttpsError('not-found', `Item ${itemId} not listed`);
+    }
+
+    if (listing.quantity < 1) {
+      throw new https.HttpsError('failed-precondition', 'Item is out of stock');
+    }
+
+    // Check if character as enough money
+    const cost = listing.cost;
+    const currencyId = marketData.currencyId;
+    const balance = (characterData.balances || {})[currencyId] || 0;
+
+    if (balance < cost) {
+      throw new https.HttpsError('failed-precondition', 'Insufficient funds');
+    }
+
+    const { name: marketName } = marketData;
+    const { name: itemName } = itemData;
+
+    // Create transaction
+    const transactionData = {
+      characterId,
+      currencyId,
+      amount: -cost,
+      createdAtEpoch: Timestamp.now(),
+      notes: `Purchased ${itemName} from ${marketName}`,
+    };
+
+    await admin.firestore().collection('transactions').add(transactionData);
+
+    // Update character's balance
+    await character.ref.update({
+      [`balances.${currencyId}`]: admin.firestore.FieldValue.increment(-cost),
+    });
+
+    // Update market.listings available
+    await market.ref.update({
+      // [`listings.${listingId}.available`]: admin.firestore.FieldValue.increment(-1),
+      [`listings.${itemId}.available`]: parseInt(listing.available) - 1,
+    });
+  });
+});
 
 exports.syncFiles = https.onCall(async (data, context) => {
   if (!context.auth) {

@@ -38,6 +38,7 @@ export const useUserStore = defineStore('user', {
       const call = httpsCallable(functions, 'updateUser');
       await call(updates);
     },
+
     async login(userId: string) {
       const charactersStore = useCharactersStore();
       charactersStore.refresh;
