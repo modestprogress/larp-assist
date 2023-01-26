@@ -1,11 +1,11 @@
 <template>
   <q-form class="row" @submit.prevent="download">
     <q-input
+      outlined
       class="col"
       v-model="fileCode"
       label="File Code"
       dark
-      filled
       clearable
       :rules="[validateFileCode]"
     />

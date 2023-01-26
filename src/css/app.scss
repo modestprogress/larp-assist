@@ -7,6 +7,12 @@
 $clr-bg: hsl(359, 100%, 13%);
 $clr-dark: #111;
 
+.text-h4 {
+    font-family: wizardFont;
+    font-size: 1.5em;
+    color: $clr-dark;
+}
+
 body {
     color: $white-warm;
     background: linear-gradient(0deg, $clr-bg, $clr-dark);

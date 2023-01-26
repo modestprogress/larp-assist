@@ -3,7 +3,14 @@
     <div class="text-h2 q-my-lg heading text-wizard text-center">
       The journal of {{ name }}
     </div>
-    <q-tabs shrink stretch class="q-mb-md">
+    <q-tabs
+      dense
+      class="text-grey q-mb-lg"
+      active-color="secondary"
+      indicator-color="secondary"
+      align="justify"
+      narrow-indicator
+    >
       <q-route-tab to="/player/motds" icon="email" label="Missives" />
       <q-route-tab
         to="/player/divinations"

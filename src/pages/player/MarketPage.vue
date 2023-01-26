@@ -72,7 +72,7 @@
             type="submit"
             class="market__item__actions__button"
             color="accent"
-            @click="purchase(listing)"
+            @click.prevent="purchase(listing)"
             >Purchase</q-btn
           >
         </div>
@@ -139,17 +139,19 @@ const listings = computed(() => {
   });
 });
 
-const purchase = (listing: Listing) => {
-  $q.loading.show();
-
+const purchase = async (listing: Listing) => {
   if (!confirm(`Purchase ${listing.item.name}?`)) {
     return;
   }
 
-  marketsStore.purchase(marketId, listing.itemId, user.characterId).then(() => {
-    marketsStore.refresh();
-    charactersStore.refresh();
-  });
+  $q.loading.show();
+
+  await marketsStore
+    .purchase(marketId, listing.itemId, user.characterId)
+    .then(() => {
+      marketsStore.refresh();
+      charactersStore.refresh();
+    });
 
   $q.loading.hide();
 };
