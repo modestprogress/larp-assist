@@ -106,7 +106,7 @@ itemsStore.refresh();
 
 const marketsStore = useMarketsStore();
 marketsStore.refresh();
-const marketId = route?.params.id || '';
+const marketId: string = route?.params.id || '';
 const market = computed(() => marketsStore.getMarket(marketId));
 
 const charactersStore = useCharactersStore();
@@ -157,8 +157,14 @@ const purchase = async (listing: Listing) => {
       type: 'negative',
       message: err.message,
     });
-  } finally {
     $q.loading.hide();
+    return;
   }
+
+  $q.loading.hide();
+  $q.notify({
+    type: 'positive',
+    message: 'Purchase successful. Check your ledger.',
+  });
 };
 </script>
