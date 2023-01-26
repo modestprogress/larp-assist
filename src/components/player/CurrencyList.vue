@@ -16,9 +16,11 @@
         <div class="col-3">Markets:</div>
         <div class="col">
           <div v-for="market in currency.markets" v-bind:key="market.id">
-            <router-link class="text-link" to="/market/">{{
-              market.name
-            }}</router-link>
+            <router-link
+              class="text-link"
+              :to="'/player/markets/' + market.id"
+              >{{ market.name }}</router-link
+            >
           </div>
         </div>
       </div>

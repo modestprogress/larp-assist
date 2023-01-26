@@ -54,6 +54,14 @@ const routes: RouteRecordRaw[] = [
     children: [
       { path: '', redirect: '/player/motds' },
       {
+        path: 'markets/:id',
+        component: () => import('pages/player/MarketPage.vue'),
+      },
+      {
+        path: 'divinations',
+        component: () => import('pages/player/DivinationsPage.vue'),
+      },
+      {
         path: 'divinations',
         component: () => import('pages/player/DivinationsPage.vue'),
       },

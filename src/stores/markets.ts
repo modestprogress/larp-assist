@@ -1,3 +1,6 @@
+//  Vue
+import { computed } from 'vue';
+
 // Pinia data store
 import { defineStore } from 'pinia';
 
@@ -18,6 +21,7 @@ export const useMarketsStore = defineStore('markets', () => {
 
   return {
     ...collection,
+    markets: computed(() => collection.items.value),
 
     createOrUpdateListing: (marketId: string, listing: Listing) => {
       const market = collection.items.value.find(({ id }) => id == marketId);
