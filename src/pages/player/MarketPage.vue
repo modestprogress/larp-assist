@@ -69,10 +69,9 @@
         </div>
         <div class="market__item__actions">
           <q-btn
-            type="submit"
             class="market__item__actions__button"
             color="accent"
-            @click.prevent="purchase(listing)"
+            @click="purchase(listing)"
             >Purchase</q-btn
           >
         </div>
@@ -146,13 +145,20 @@ const purchase = async (listing: Listing) => {
 
   $q.loading.show();
 
-  await marketsStore
-    .purchase(marketId, listing.itemId, user.characterId)
-    .then(() => {
-      marketsStore.refresh();
-      charactersStore.refresh();
+  try {
+    await marketsStore
+      .purchase(marketId, listing.itemId, user.characterId)
+      .then(() => {
+        marketsStore.refresh();
+        charactersStore.refresh();
+      });
+  } catch (err) {
+    $q.notify({
+      type: 'negative',
+      message: err.message,
     });
-
-  $q.loading.hide();
+  } finally {
+    $q.loading.hide();
+  }
 };
 </script>

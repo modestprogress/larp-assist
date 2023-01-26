@@ -61,6 +61,7 @@
 <script setup lang="ts">
 // Vue
 import { computed, ref } from 'vue';
+import { useQuasar } from 'quasar';
 
 // Ours - Components
 import SelectField from 'components/common/SelectField.vue';
@@ -76,6 +77,8 @@ const props = defineProps([
   'currencies',
   'markets',
 ]);
+
+const $q = useQuasar();
 
 const validateAmount = (val: string) => {
   const amount = Number(val);
@@ -113,16 +116,32 @@ const currenciesStore = useCurrenciesStore();
 const charactersStore = useCharactersStore();
 
 const transfer = async () => {
-  await currenciesStore.transfer(
-    transferTo.value,
-    transferCurrency.value,
-    transferAmount.value
-  );
+  $q.loading.show();
+
+  try {
+    await currenciesStore.transfer(
+      transferTo.value,
+      transferCurrency.value,
+      transferAmount.value
+    );
+  } catch (err) {
+    $q.notify({
+      type: 'negative',
+      message: err.message,
+    });
+
+    $q.loading.hide();
+
+    return;
+  }
 
   transferAmount.value = 0;
   transferTo.value = null;
   transferCurrency.value = null;
+
   await charactersStore.refresh();
+
+  $q.loading.hide();
 };
 </script>
 
