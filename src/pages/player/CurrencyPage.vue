@@ -31,7 +31,14 @@ const currencies = computed(() =>
     currency.characterIds.includes(userStore.user.characterId)
   )
 );
-const currencyNames = computed(() => currenciesStore.getCurrencyNames());
+const currencyNames = computed(() => {
+  const currencyNames = new Map();
+  currencies.value.forEach((currency) => {
+    currencyNames.set(currency.id, currency.name);
+  });
+
+  return currencyNames;
+});
 
 const marketsStore = useMarketsStore();
 marketsStore.refresh();
