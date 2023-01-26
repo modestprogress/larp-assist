@@ -74,10 +74,7 @@ exports.transferCurrency = https.onCall(async (data, context) => {
   const sourceBalances = characterData.balances || {};
   const sourceBalance = sourceBalances[currencyId] || 0;
   if (sourceBalance < amount) {
-    throw new https.HttpsError(
-      'failed-precondition',
-      'Insufficient (source) funds'
-    );
+    throw new https.HttpsError('failed-precondition', 'Insufficient funds');
   }
 
   const toCharacter = await admin
@@ -249,11 +246,11 @@ exports.purchase = https.onCall(async (data, context) => {
     throw new https.HttpsError('not-found', `Item ${itemId} not listed`);
   }
 
-  if (listing.quantity < 1) {
+  if (listing.available < 1) {
     throw new https.HttpsError('failed-precondition', 'Item is out of stock');
   }
 
-  // Check if character as enough money
+  // Check if character has enough money
   const cost = listing.cost;
   const { currencyId, name: marketName } = marketData;
   const balance = (characterData.balances || {})[currencyId] || 0;
