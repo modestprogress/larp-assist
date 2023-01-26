@@ -1,7 +1,6 @@
 <style scoped lang="scss">
 .character__balance {
   text-align: center;
-  font-size: 1.5rem;
 }
 
 .market {
@@ -42,14 +41,14 @@
 }
 
 .market__name {
-  margin-bottom: 0.8rem;
   text-align: center;
+  color: $secondary;
 }
 </style>
 
 <template>
   <div class="container">
-    <div class="market__name text-h4">{{ market?.name }}</div>
+    <div class="market__name text-h5">{{ marketName }}</div>
     <div class="character__balance text-h6">
       Balance: {{ balance }} {{ currencyName }}
     </div>
@@ -107,7 +106,8 @@ itemsStore.refresh();
 const marketsStore = useMarketsStore();
 marketsStore.refresh();
 const marketId: string = route?.params.id || '';
-const market = computed(() => marketsStore.getMarket(marketId));
+const market = computed(() => marketsStore.itemsById.get(marketId));
+const marketName = computed(() => market.value?.name || '');
 
 const charactersStore = useCharactersStore();
 charactersStore.refresh();
