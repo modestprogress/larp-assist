@@ -40,6 +40,9 @@ import { hashChapter } from 'src/models/books';
 
 const props = defineProps(['bookId']);
 
+const trapsStore = useSectionsStore();
+trapsStore.refresh();
+
 const sectionsStore = useSectionsStore();
 sectionsStore.refresh();
 

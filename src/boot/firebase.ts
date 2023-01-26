@@ -6,7 +6,11 @@ import {
   connectAuthEmulator,
 } from 'firebase/auth';
 
-import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
+import {
+  getFirestore,
+  connectFirestoreEmulator,
+  initializeFirestore,
+} from 'firebase/firestore';
 
 import { getFunctions, connectFunctionsEmulator } from 'firebase/functions';
 
@@ -29,6 +33,10 @@ const config = {
 
 export default boot(({ app, router }) => {
   const firebaseApp = initializeApp(config);
+  initializeFirestore(firebaseApp, {
+    ignoreUndefinedProperties: true,
+  });
+
   const firestore = getFirestore(firebaseApp);
   const storage = getStorage(firebaseApp);
   const auth = getAuth(firebaseApp);
