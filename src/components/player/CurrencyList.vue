@@ -28,7 +28,7 @@
   </div>
   <q-separator inset class="q-mb-md" />
   <div class="text-h6 q-mb-md">Transfer</div>
-  <q-form @submit="onTransfer">
+  <q-form @submit="transfer">
     <div class="col">
       <div class="row">
         <q-input
@@ -64,6 +64,10 @@ import { computed, ref } from 'vue';
 // Ours - Components
 import SelectField from 'components/common/SelectField.vue';
 
+// Ours - Stores
+import { useCurrenciesStore } from 'stores/currencies';
+import { useCharactersStore } from 'stores/characters';
+
 const props = defineProps([
   'character',
   'characterNames',
@@ -72,11 +76,7 @@ const props = defineProps([
   'markets',
 ]);
 
-const onTransfer = () => {
-  console.log('Transfering!');
-};
-
-const validateAmount = (val) => {
+const validateAmount = (val: string) => {
   const amount = Number(val);
 
   if (!(Number.isInteger(amount) && amount >= 0)) {
@@ -107,6 +107,22 @@ const currenciesWithMarkets = computed(() => {
     markets: marketsByCurrency.value.get(currency.id) || [],
   }));
 });
+
+const currenciesStore = useCurrenciesStore();
+const charactersStore = useCharactersStore();
+
+const transfer = async () => {
+  await currenciesStore.transfer(
+    transferTo.value,
+    transferCurrency.value,
+    transferAmount.value
+  );
+
+  transferAmount.value = 0;
+  transferTo.value = null;
+  transferCurrency.value = null;
+  await charactersStore.refresh();
+};
 </script>
 
 <style lang="scss">

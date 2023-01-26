@@ -4,6 +4,9 @@ import { computed } from 'vue';
 // Pinia data store
 import { defineStore } from 'pinia';
 
+// Firebase functions
+import { getFunctions, httpsCallable } from 'firebase/functions';
+
 // Ours
 import { useFirestoreCollection } from 'stores/firestore';
 import { Market, Listing } from 'src/models';
@@ -59,5 +62,12 @@ export const useMarketsStore = defineStore('markets', () => {
       new Map<string, string>(
         collection.items.value.map(({ id, name }) => [id, name])
       ),
+
+    purchase: (marketId: string, itemId: string, characterId: string) => {
+      const functions = getFunctions();
+      const purchase = httpsCallable(functions, 'purchase');
+
+      return purchase({ marketId, itemId, characterId });
+    },
   };
 });

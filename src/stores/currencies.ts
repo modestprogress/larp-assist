@@ -5,6 +5,9 @@ import { defineStore } from 'pinia';
 import { useFirestoreCollection } from 'stores/firestore';
 import { Currency } from 'src/models';
 
+// Firebase functions
+import { getFunctions, httpsCallable } from 'firebase/functions';
+
 export const useCurrenciesStore = defineStore('currencies', () => {
   const collection = useFirestoreCollection<Currency>('currencies', {
     map: (id, data) => ({
@@ -30,5 +33,11 @@ export const useCurrenciesStore = defineStore('currencies', () => {
       new Map<string, string>(
         collection.items.value.map(({ id, name }) => [id, name])
       ),
+
+    transfer: (to: string, currencyId: string, amount: number) => {
+      const transfer = httpsCallable(getFunctions(), 'transferCurrency');
+
+      return transfer({ to, currencyId, amount });
+    },
   };
 });
