@@ -36,8 +36,9 @@ exports.transferCurrency = https.onCall(async (data, context) => {
     );
   }
 
-  const { amount, currencyId, to } = data;
+  const { currencyId, to } = data;
 
+  const amount = parseInt(data.amount);
   if (amount < 0) {
     throw new https.HttpsError('invalid-argument', 'Amount must be positive');
   }
@@ -71,7 +72,7 @@ exports.transferCurrency = https.onCall(async (data, context) => {
 
   const characterData = character.data() || {};
   const sourceBalances = characterData.balances || {};
-  const sourceBalance = sourceBalances[currencyId] || 0;
+  const sourceBalance = parseInt(sourceBalances[currencyId]) || 0;
   if (sourceBalance < amount) {
     throw new https.HttpsError('failed-precondition', 'Insufficient funds');
   }
@@ -86,7 +87,7 @@ exports.transferCurrency = https.onCall(async (data, context) => {
     throw new https.HttpsError('not-found', 'Destination character not found');
   }
   const toCharacterData = toCharacter.data() || {};
-  const destBalance = toCharacterData.balances[currencyId] || 0;
+  const destBalance = parseInt(toCharacterData.balances[currencyId]) || 0;
 
   if (sourceBalance < amount) {
     throw new https.HttpsError(
@@ -106,18 +107,19 @@ exports.transferCurrency = https.onCall(async (data, context) => {
 
   const currencyName = currency.data()?.name;
 
+  console.log(sourceBalance, destBalance, amount);
   await admin
     .firestore()
     .collection('characters')
     .doc(characterId)
     .update({
-      [`balances.${currencyId}`]: admin.firestore.FieldValue.increment(-amount),
+      [`balances.${currencyId}`]: sourceBalance - amount,
     });
 
   await admin
     .firestore()
     .collection('characters')
-    .doc(characterId)
+    .doc(to)
     .update({
       [`balances.${currencyId}`]: destBalance + amount,
     });
@@ -245,14 +247,16 @@ exports.purchase = https.onCall(async (data, context) => {
     throw new https.HttpsError('not-found', `Item ${itemId} not listed`);
   }
 
-  if (listing.available < 1) {
+  const available = parseInt(listing.available) || 0;
+
+  if (available < 1) {
     throw new https.HttpsError('failed-precondition', 'Item is out of stock');
   }
 
   // Check if character has enough money
-  const cost = listing.cost;
+  const cost = parseInt(listing.cost || '0');
   const { currencyId, name: marketName } = marketData;
-  const balance = (characterData.balances || {})[currencyId] || 0;
+  const balance = parseInt((characterData.balances || {})[currencyId] || 0);
 
   if (balance < cost) {
     throw new https.HttpsError('failed-precondition', 'Insufficient funds');
@@ -270,13 +274,12 @@ exports.purchase = https.onCall(async (data, context) => {
   admin.firestore().collection('transactions').add(transactionData);
   // Update character's balance
   await character.ref.update({
-    [`balances.${currencyId}`]: admin.firestore.FieldValue.increment(-cost),
+    [`balances.${currencyId}`]: balance - cost,
   });
 
   // Update market.listings available
   await market.ref.update({
-    // [`listings.${listingId}.available`]: admin.firestore.FieldValue.increment(-1),
-    [`listings.${itemId}.available`]: parseInt(listing.available) - 1,
+    [`listings.${itemId}.available`]: available - 1,
   });
 
   return success({ message: 'Purchase successful' });
