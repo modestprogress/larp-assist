@@ -12,11 +12,10 @@ const getTime = () => Timestamp.now().toMillis();
 const success = (data: any) => ({ data, status: 'success' });
 
 exports.onCreateUser = auth.user().onCreate(async (user) => {
-  const { uid, displayName, email } = user;
+  const { uid, email } = user;
   const userData = {
     uid,
     email,
-    name: displayName || '',
     createdAt: Timestamp.now(),
     isActivated: false,
     gm: false,
@@ -370,5 +369,5 @@ exports.updateUser = https.onCall(async (data, context) => {
   // Update the user in Firebase Auth
   await admin.auth().updateUser(uid, userData);
 
-  return success({ message: 'User updated' });
+  return success({ message: 'User updated (auth service)' });
 });

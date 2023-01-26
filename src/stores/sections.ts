@@ -29,7 +29,6 @@ export const useSectionsStore = defineStore('sections', () => {
     }),
     after: (sections: Section[]) => {
       const trapsStore = useTrapsStore();
-      // TODO dear god refactor this mess after the meeting
       trapsStore.refresh().then(() => {
         const byBookIdUnsorted = new Map();
         sections.forEach((section) => {
@@ -44,13 +43,8 @@ export const useSectionsStore = defineStore('sections', () => {
             bookId,
             groupSectionsByChapter(sections).map((chapters) => {
               return chapters.map((section) => {
-                if (section.type == SectionType.Trap) {
-                  const trap = trapsStore.itemsById.get(section.trapId);
-                  if (trap) {
-                    return trap.content;
-                  }
-
-                  return '';
+                if (section.type === SectionType.TrapType) {
+                  return trapsStore.itemsById.get(section.trapId).content;
                 }
 
                 return section.text;
