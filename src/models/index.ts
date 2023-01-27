@@ -14,10 +14,16 @@ export interface User extends Model {
   email: string;
 }
 
+export enum ListingType {
+  OFFER = 'offer',
+  SPEND = 'spend',
+}
+
 export interface Listing extends Model {
   itemId: string;
   available: number;
   value: number;
+  type: ListingType;
 }
 
 export interface Item extends Model {
