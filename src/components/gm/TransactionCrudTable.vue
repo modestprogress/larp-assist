@@ -15,7 +15,7 @@
         label="Character"
         v-model="formData.characterId"
         class="q-mb-md"
-        hint="Character's balance to be effected"
+        hint="Character's balance to be affected"
         :values_labels="characterNames"
       />
       <SelectField
