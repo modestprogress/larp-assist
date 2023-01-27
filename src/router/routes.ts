@@ -54,6 +54,18 @@ const routes: RouteRecordRaw[] = [
     children: [
       { path: '', redirect: '/player/motds' },
       {
+        path: 'markets/:id',
+        component: () => import('pages/player/MarketPage.vue'),
+      },
+      {
+        path: 'divinations',
+        component: () => import('pages/player/DivinationsPage.vue'),
+      },
+      {
+        path: 'transactions',
+        component: () => import('pages/player/TransactionsPage.vue'),
+      },
+      {
         path: 'divinations',
         component: () => import('pages/player/DivinationsPage.vue'),
       },
@@ -76,7 +88,7 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/GMLayout.vue'),
     beforeEnter: redirectIfNotReady,
     children: [
-      { path: '', redirect: '/gm/characters' },
+      { path: '', redirect: '/gm/books' },
       {
         path: 'books/:id',
         component: () => import('pages/gm/BookPage.vue'),

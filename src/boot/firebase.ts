@@ -6,7 +6,11 @@ import {
   connectAuthEmulator,
 } from 'firebase/auth';
 
-import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
+import {
+  getFirestore,
+  connectFirestoreEmulator,
+  initializeFirestore,
+} from 'firebase/firestore';
 
 import { getFunctions, connectFunctionsEmulator } from 'firebase/functions';
 
@@ -29,15 +33,19 @@ const config = {
 
 export default boot(({ app, router }) => {
   const firebaseApp = initializeApp(config);
+  initializeFirestore(firebaseApp, {
+    ignoreUndefinedProperties: true,
+  });
+
   const firestore = getFirestore(firebaseApp);
   const storage = getStorage(firebaseApp);
   const auth = getAuth(firebaseApp);
   const functions = getFunctions(firebaseApp);
 
   if (process.env.DEV) {
-    connectFirestoreEmulator(firestore, 'localhost', 8080);
-    connectStorageEmulator(storage, 'localhost', 9199);
-    connectAuthEmulator(auth, 'http://localhost:9099');
+    //connectFirestoreEmulator(firestore, 'localhost', 8080);
+    //connectStorageEmulator(storage, 'localhost', 9199);
+    //connectAuthEmulator(auth, 'http://localhost:9099');
     connectFunctionsEmulator(functions, 'localhost', 5001);
   }
 

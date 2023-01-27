@@ -20,24 +20,36 @@
       class="q-mb-md"
       v-model="formData.itemId"
       :values_labels="itemNames"
-      hint="The item available to purchase"
+      hint="The item value, offered or spent"
     />
     <q-input
       outlined
-      label="Available"
-      v-model="formData.available"
+      label="Quantity"
+      v-model="formData.amount"
       class="q-mb-md"
-      hint="Number available to players in this market"
+      hint="Number amount to players in this market"
       :rules="[$rules.required()]"
     />
     <q-input
       outlined
-      label="Cost"
-      v-model="formData.cost"
+      label="Value"
+      v-model="formData.value"
       class="q-mb-md"
-      hint="Cost in units of the market's currency"
+      hint="Value in units of the market's currency"
       :rules="[$rules.required()]"
     />
+    <div class="q-gutter-sm">
+      <q-radio
+        v-model="formData.type"
+        :val="ListingType.SPEND"
+        label="Player Spends"
+      />
+      <q-radio
+        v-model="formData.type"
+        :val="ListingType.OFFER"
+        label="Player Offers"
+      />
+    </div>
   </DialogForm>
 </template>
 
@@ -54,6 +66,9 @@ import CrudTable from 'components/common/CrudTable.vue';
 import DialogForm from 'components/common/DialogForm.vue';
 import SelectField from 'components/common/SelectField.vue';
 
+// Ours - models
+import { Listing, ListingType } from 'src/models';
+
 const columns = [
   {
     name: 'item',
@@ -65,17 +80,25 @@ const columns = [
     required: true,
   },
   {
-    name: 'available',
-    field: 'available',
-    label: 'Available',
+    name: 'amount',
+    field: 'amount',
+    label: 'Amount',
     align: 'left',
     sortable: true,
     required: true,
   },
   {
-    name: 'cost',
-    field: 'cost',
-    label: 'Cost',
+    name: 'value',
+    field: 'value',
+    label: 'Value',
+    align: 'left',
+    sortable: true,
+    required: true,
+  },
+  {
+    name: 'type',
+    field: 'type',
+    label: 'Type',
     align: 'left',
     sortable: true,
     required: true,
@@ -93,8 +116,9 @@ const formData = ref();
 const dialog = ref(null);
 
 // The callback when you click edit or add
-const onEdit = (item = {}) => {
-  formData.value = { ...item };
+const onEdit = (listing: Listing) => {
+  formData.value = { ...(listing || {}) };
+
   dialog.value.show();
 };
 

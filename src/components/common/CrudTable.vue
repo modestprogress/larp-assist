@@ -6,55 +6,53 @@
 </style>
 
 <template>
-  <div class="q-pa-md">
-    <q-table
-      dark
-      class="bg-transparent"
-      :rows="rows || []"
-      :columns="columns"
-      wrap-cells
-      row-key="id"
-      binary-state-sort
-      v-model:pagination="paginationSettings"
-    >
-      <template v-slot:top>
-        <div class="row title-row">
-          <div class="q-table__title q-mr-sm">{{ title }}</div>
-          <q-btn
-            round
-            v-if="!hideAdd"
-            size="xs"
-            class="q-mr-sm"
-            color="secondary"
-            icon="add"
-            @click="onAdd"
-          />
-          <q-btn
-            round
-            size="xs"
-            class="q-mr-sm"
-            color="primary"
-            icon="archive"
-            no-caps
-            @click="onExport"
-          />
-        </div>
-      </template>
-      <template v-slot:body-cell-actions="props">
-        <q-td :props="props">
-          <q-btn icon="mode_edit" @click="onEdit(props.row)"></q-btn>
-          <q-btn
-            v-if="!hideDelete"
-            icon="delete"
-            @click="onDelete(props.row)"
-          ></q-btn>
-        </q-td>
-      </template>
-      <template v-slot:loading>
-        <q-inner-loading showing color="primary" />
-      </template>
-    </q-table>
-  </div>
+  <q-table
+    dark
+    class="bg-transparent"
+    :rows="rows || []"
+    :columns="columns"
+    wrap-cells
+    row-key="id"
+    binary-state-sort
+    v-model:pagination="paginationSettings"
+  >
+    <template v-slot:top>
+      <div class="row title-row">
+        <div class="q-table__title q-mr-sm">{{ title }}</div>
+        <q-btn
+          round
+          v-if="!hideAdd"
+          size="xs"
+          class="q-mr-sm"
+          color="secondary"
+          icon="add"
+          @click="onAdd"
+        />
+        <q-btn
+          round
+          size="xs"
+          class="q-mr-sm"
+          color="primary"
+          icon="archive"
+          no-caps
+          @click="onExport"
+        />
+      </div>
+    </template>
+    <template v-slot:body-cell-actions="props">
+      <q-td :props="props">
+        <q-btn icon="mode_edit" @click="onEdit(props.row)"></q-btn>
+        <q-btn
+          v-if="!hideDelete"
+          icon="delete"
+          @click="onDelete(props.row)"
+        ></q-btn>
+      </q-td>
+    </template>
+    <template v-slot:loading>
+      <q-inner-loading showing color="primary" />
+    </template>
+  </q-table>
 </template>
 
 <script setup lang="ts">

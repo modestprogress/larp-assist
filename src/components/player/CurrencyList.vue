@@ -16,9 +16,11 @@
         <div class="col-3">Markets:</div>
         <div class="col">
           <div v-for="market in currency.markets" v-bind:key="market.id">
-            <router-link class="text-link" to="/market/">{{
-              market.name
-            }}</router-link>
+            <router-link
+              class="text-link"
+              :to="'/player/markets/' + market.id"
+              >{{ market.name }}</router-link
+            >
           </div>
         </div>
       </div>
@@ -26,23 +28,31 @@
   </div>
   <q-separator inset class="q-mb-md" />
   <div class="text-h6 q-mb-md">Transfer</div>
-  <q-form @submit="onTransfer">
+  <q-form @submit="transfer">
     <div class="col">
-      <div class="row">
+      <div class="row q-mb-md">
         <q-input
           outlined
           v-model="transferAmount"
           :rules="[validateAmount]"
           label="Amount"
-          class="col-3"
+          class="col-3 transfer-amount"
         />
-        <CurrencySelect
+        <SelectField
+          outlined
           label="Currency"
-          v-model="transferCurrency"
           class="col"
+          v-model="transferCurrency"
+          :values_labels="currencyNames"
+          hint="The currency to transfer"
         />
       </div>
-      <CharacterSelect label="To" v-model="transferTo" />
+      <SelectField
+        label="To"
+        v-model="transferTo"
+        :values_labels="characterNames"
+        hint="Who can see and shop at the markets"
+      />
       <q-btn color="primary" label="Transfer" type="submit" class="q-mt-lg" />
     </div>
   </q-form>
@@ -50,17 +60,27 @@
 
 <script setup lang="ts">
 // Vue
-import { computed, ref, inject } from 'vue';
+import { computed, ref } from 'vue';
+import { useQuasar } from 'quasar';
 
 // Ours - Components
-//import CurrencySelect from 'components/common/CurrencySelect.vue';
-//import CharacterSelect from 'components/common/CharacterSelect.vue';
+import SelectField from 'components/common/SelectField.vue';
 
-const onTransfer = () => {
-  console.log('Transfering!');
-};
+// Ours - Stores
+import { useCurrenciesStore } from 'stores/currencies';
+import { useCharactersStore } from 'stores/characters';
 
-const validateAmount = (val) => {
+const props = defineProps([
+  'character',
+  'characterNames',
+  'currencyNames',
+  'currencies',
+  'markets',
+]);
+
+const $q = useQuasar();
+
+const validateAmount = (val: string) => {
   const amount = Number(val);
 
   if (!(Number.isInteger(amount) && amount >= 0)) {
@@ -72,10 +92,9 @@ const transferAmount = ref(0);
 const transferTo = ref();
 const transferCurrency = ref();
 
-const markets = inject('markets');
 const marketsByCurrency = computed(() => {
   const byCurrency = new Map();
-  markets.value.forEach((market) => {
+  props.markets.forEach((market) => {
     const currencyId = market.currencyId;
     const siblingMarkets = byCurrency.get(currencyId) || [];
     byCurrency.set(currencyId, siblingMarkets.concat(market));
@@ -84,19 +103,54 @@ const marketsByCurrency = computed(() => {
   return byCurrency;
 });
 
-const currencies = inject('currencies');
 const currenciesWithMarkets = computed(() => {
-  return currencies.value.map((currency) => ({
+  return props.currencies.map((currency) => ({
     name: currency.name,
     id: currency.id,
-    amount: 0,
+    amount: (props.character.balances || {})[currency.id] || 0,
     markets: marketsByCurrency.value.get(currency.id) || [],
   }));
 });
+
+const currenciesStore = useCurrenciesStore();
+const charactersStore = useCharactersStore();
+
+const transfer = async () => {
+  $q.loading.show();
+
+  try {
+    await currenciesStore.transfer(
+      transferTo.value,
+      transferCurrency.value,
+      transferAmount.value
+    );
+  } catch (err) {
+    $q.notify({
+      type: 'negative',
+      message: err.message,
+    });
+
+    $q.loading.hide();
+
+    return;
+  }
+
+  transferAmount.value = 0;
+  transferTo.value = null;
+  transferCurrency.value = null;
+
+  await charactersStore.refresh();
+
+  $q.loading.hide();
+};
 </script>
 
 <style lang="scss">
 .currency-name {
   font-size: 1.2rem;
+}
+
+.transfer-amount {
+  margin-right: 1rem;
 }
 </style>

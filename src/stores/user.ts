@@ -13,15 +13,15 @@ import { getFunctions, httpsCallable } from 'firebase/functions';
 // Ours
 import { useCharactersStore } from './characters';
 
-function getSignedOutUser() {
+export const getSignedOutUser = () => {
   return {
     isLoggedIn: false,
     id: '',
     gm: false,
-    characterId: null,
+    characterId: '',
     isActivated: false,
   };
-}
+};
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -38,6 +38,7 @@ export const useUserStore = defineStore('user', {
       const call = httpsCallable(functions, 'updateUser');
       await call(updates);
     },
+
     async login(userId: string) {
       const charactersStore = useCharactersStore();
       charactersStore.refresh;

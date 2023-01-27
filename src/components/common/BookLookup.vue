@@ -1,50 +1,53 @@
 <template>
-  <q-dialog ref="dialog">
-    <q-card class="q-dialog-plugin">
-      <q-card-section>
-        <BookReader :bookId="book.id" />
-      </q-card-section>
+  <div class="fullwidth fullheight">
+    <q-dialog ref="dialog">
+      <q-card class="q-dialog-plugin">
+        <q-card-section>
+          <BookReader :bookId="book.id" />
+        </q-card-section>
 
-      <q-card-actions align="right">
-        <q-btn color="primary" label="Close" @click="onCancelClick" />
-      </q-card-actions>
-    </q-card>
-  </q-dialog>
-  <div class="col">
-    <q-form @submit="onRead">
-      <div class="row lookup-form">
-        <q-input
-          outlined
-          v-model="bookCode"
-          :rules="[validateCode]"
-          label="Book Code"
-          class="col"
-        />
-        <q-btn
-          color="primary"
-          label="Read"
-          type="submit"
-          class="col-auto q-ml-sm"
-        />
-      </div>
-    </q-form>
-    <div class="col text-body1" v-if="book">
-      <div class="row">
-        <div class="col-2">Title:</div>
-        <div class="col">{{ book.name }}</div>
-      </div>
-      <div class="row">
-        <div class="col-2">Location:</div>
-        <div class="col">{{ book.location }}</div>
-      </div>
-      <div class="text-body1 q-mt-sm">
-        {{ book.description }}
+        <q-card-actions align="right">
+          <q-btn color="primary" label="Close" @click="onCancelClick" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <div class="col">
+      <q-form @submit="onRead">
+        <div class="row lookup-form">
+          <q-input
+            outlined
+            id="bookCode"
+            v-model="bookCode"
+            :rules="[validateCode]"
+            label="Book Code"
+            class="col"
+          />
+          <q-btn
+            color="primary"
+            label="Read"
+            type="submit"
+            class="col-auto q-ml-sm"
+          />
+        </div>
+      </q-form>
+      <div class="col text-body1" v-if="book">
+        <div class="row">
+          <div class="col-2">Title:</div>
+          <div class="col">{{ book.name }}</div>
+        </div>
+        <div class="row">
+          <div class="col-2">Location:</div>
+          <div class="col">{{ book.location }}</div>
+        </div>
+        <div class="text-body1 q-mt-sm">
+          {{ book.description }}
+        </div>
       </div>
     </div>
   </div>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 .lookup-form {
   button {
     height: 56px;

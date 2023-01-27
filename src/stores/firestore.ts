@@ -43,7 +43,9 @@ export const useFirestoreCollection = <T extends Model>(
         itemsById.value = new Map<string, T>();
         docs.forEach((doc) => {
           const id = doc.id;
-          const item = settings.map(id, doc.data());
+          const data = doc.data();
+          const item = settings.map(id, data);
+          item.createdAtEpoch = data.createdAtEpoch;
 
           items.value.push(item);
           itemsById.value.set(id, item);

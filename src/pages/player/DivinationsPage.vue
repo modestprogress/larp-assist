@@ -1,8 +1,6 @@
 <template>
-  <SimpleCard>
-    <DivinationsList v-if="divinations.length > 0" :divinations="divinations" />
-    <div v-else>No MOTDs</div>
-  </SimpleCard>
+  <DivinationsList v-if="divinations.length > 0" :divinations="divinations" />
+  <div v-else>No Divinations</div>
 </template>
 
 <script setup lang="ts">

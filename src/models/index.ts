@@ -10,15 +10,20 @@ export interface User extends Model {
   isActivated: boolean;
   name: string;
   characterId: string;
-  code: string;
   notes: string;
   email: string;
+}
+
+export enum ListingType {
+  OFFER = 'offer',
+  SPEND = 'spend',
 }
 
 export interface Listing extends Model {
   itemId: string;
   available: number;
   value: number;
+  type: ListingType;
 }
 
 export interface Item extends Model {
@@ -37,8 +42,8 @@ export interface File extends Model {
 
 export interface Character extends Model {
   name: string;
-  code: string;
   notes: string;
+  balances: { [currencyId: string]: number };
 }
 
 export interface Market extends Model {
