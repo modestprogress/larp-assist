@@ -32,7 +32,7 @@
   <div class="container">
     <div class="card">
       <div class="text-h3">Unactivated Account</div>
-      <div class="body">Your account has not yet been actived by a GM.</div>
+      <div class="body">Your account has not yet been activated by a GM.</div>
     </div>
   </div>
 </template>

@@ -147,7 +147,6 @@ const listings = computed(() => {
   if (itemsStore.items.length === 0) return [];
 
   return Object.values(market.value.listings)
-    .filter((listing: Listing) => listing.purchasable || listing.sellable)
     .map((listing: Listing) => {
       const item = itemsStore.getItem(listing.itemId) || {};
       return { ...listing, item };
