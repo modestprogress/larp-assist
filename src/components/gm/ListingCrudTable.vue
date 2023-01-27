@@ -82,7 +82,7 @@ const columns = [
   {
     name: 'amount',
     field: 'amount',
-    label: 'Quantity',
+    label: 'Amount',
     align: 'left',
     sortable: true,
     required: true,
