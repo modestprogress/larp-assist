@@ -9,17 +9,28 @@ import { getFunctions, httpsCallable } from 'firebase/functions';
 
 // Ours
 import { useFirestoreCollection } from 'stores/firestore';
-import { Market, Listing } from 'src/models';
+import { Market, Listing, ListingType } from 'src/models';
 
 export const useMarketsStore = defineStore('markets', () => {
   const collection = useFirestoreCollection<Market>('markets', {
-    map: (id, data) => ({
-      name: data.name,
-      characterIds: data.characterIds || [],
-      currencyId: data.currencyId,
-      listings: data.listings || {},
-      id: id,
-    }),
+    map: (id, data) => {
+      const listings = data.listings || {};
+
+      Object.keys(listings).forEach((key) => {
+        const listing = listings[key];
+
+        // Defaults for historical listings.
+        listing.type = listing.type || ListingType.SPEND;
+      });
+
+      return {
+        name: data.name,
+        characterIds: data.characterIds || [],
+        currencyId: data.currencyId,
+        id: id,
+        listings: listings,
+      };
+    },
   });
 
   return {
@@ -63,11 +74,16 @@ export const useMarketsStore = defineStore('markets', () => {
         collection.items.value.map(({ id, name }) => [id, name])
       ),
 
-    purchase: (marketId: string, itemId: string, characterId: string) => {
+    exchange: (
+      marketId: string,
+      itemId: string,
+      characterId: string,
+      spend: boolean
+    ) => {
       const functions = getFunctions();
-      const purchase = httpsCallable(functions, 'purchase');
+      const exchange = httpsCallable(functions, 'exchange');
 
-      return purchase({ marketId, itemId, characterId });
+      return exchange({ marketId, itemId, characterId, spend });
     },
   };
 });

@@ -35,14 +35,20 @@
   margin-top: 0.5rem;
 }
 
-.market__item__cost,
-.market__item__available {
+.market__item__value,
+.market__item__amount {
   margin-bottom: 0.1rem;
 }
 
 .market__name {
   text-align: center;
   color: $secondary;
+}
+
+.market__item__actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 </style>
 
@@ -59,19 +65,25 @@
         :key="listing.item.id"
       >
         <div class="market__item__name">{{ listing.item.name }}</div>
-        <div class="market__item__cost">Cost {{ listing.cost }}</div>
-        <div class="market__item__available">
-          Available {{ listing.available }}
-        </div>
+        <div class="market__item__value">Value {{ listing.value }}</div>
+        <div class="market__item__amount">Amount {{ listing.amount }}</div>
         <div class="market__item__description">
           {{ listing.item.description }}
         </div>
         <div class="market__item__actions">
           <q-btn
+            v-if="listing.amount > 0 && listing.type == ListingType.SPEND"
+            class="market__item__actions__button q-mr-md"
+            color="accent"
+            @click="spend(listing)"
+            >Spend</q-btn
+          >
+          <q-btn
+            v-if="listing.type == ListingType.OFFER"
             class="market__item__actions__button"
             color="accent"
-            @click="purchase(listing)"
-            >Purchase</q-btn
+            @click="offer(listing)"
+            >Offer</q-btn
           >
         </div>
       </div>
@@ -93,7 +105,7 @@ import { useCharactersStore } from 'src/stores/characters';
 import { useCurrenciesStore } from 'src/stores/currencies';
 
 // Ours - types
-import { Item, Listing } from 'src/models';
+import { Listing, ListingType } from 'src/models';
 
 const route = useRoute();
 const $q = useQuasar();
@@ -117,7 +129,7 @@ const balance = computed(() => {
 
   const character = charactersStore.getCharacter(user.characterId);
 
-  return character.balances[market.value.currencyId] || 0;
+  return (character.balances || {})[market.value.currencyId] || 0;
 });
 
 const currenciesStore = useCurrenciesStore();
@@ -131,15 +143,21 @@ const currencyName = computed(() => {
 
 const listings = computed(() => {
   if (!market.value) return [];
+  if (!market.value.listings) return [];
+  if (itemsStore.items.length === 0) return [];
 
-  return Object.values(market.value.listings).map((listing: Listing) => {
-    const item = itemsStore.getItem(listing.itemId);
-    return { ...listing, item };
-  });
+  return Object.values(market.value.listings)
+    .filter((listing: Listing) => listing.purchasable || listing.sellable)
+    .map((listing: Listing) => {
+      const item = itemsStore.getItem(listing.itemId) || {};
+      return { ...listing, item };
+    })
+    .sort((a, b) => a.item.name.localeCompare(b.item.name));
 });
 
-const purchase = async (listing: Listing) => {
-  if (!confirm(`Purchase ${listing.item.name}?`)) {
+const exchange = async (listing: Listing, spend = true) => {
+  const confirmPrefix = spend ? 'Spend on' : 'Purchase';
+  if (!confirm(`${confirmPrefix} ${listing.item.name}?`)) {
     return;
   }
 
@@ -147,7 +165,7 @@ const purchase = async (listing: Listing) => {
 
   try {
     await marketsStore
-      .purchase(marketId, listing.itemId, user.characterId)
+      .exchange(marketId, listing.itemId, user.characterId, spend)
       .then(() => {
         marketsStore.refresh();
         charactersStore.refresh();
@@ -161,10 +179,16 @@ const purchase = async (listing: Listing) => {
     return;
   }
 
+  const message = spend
+    ? `Spent ${listing.value} ${currencyName.value} on ${listing.item.name}`
+    : `Offered ${listing.item.name} for ${listing.value} ${currencyName.value}`;
   $q.loading.hide();
   $q.notify({
     type: 'positive',
-    message: 'Purchase successful. Check your ledger.',
+    message: message,
   });
 };
+
+const offer = (listing: Listing) => exchange(listing, false);
+const spend = (listing: Listing) => exchange(listing, true);
 </script>

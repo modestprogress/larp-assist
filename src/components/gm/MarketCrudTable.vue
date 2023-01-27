@@ -13,7 +13,7 @@
     <DialogForm ref="dialog" @submit="onSubmit" class="column">
       <div class="text-center q-mb-md text-h6" v-if="formData.id">
         <router-link class="text-primary" :to="`/gm/markets/${formData.id}`">
-          Edit item quantities
+          Edit item listings
         </router-link>
       </div>
       <q-input

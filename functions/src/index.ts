@@ -107,7 +107,6 @@ exports.transferCurrency = https.onCall(async (data, context) => {
 
   const currencyName = currency.data()?.name;
 
-  console.log(sourceBalance, destBalance, amount);
   await admin
     .firestore()
     .collection('characters')
@@ -197,7 +196,7 @@ exports.onTransaction = exports.myFunction = firestore
     });
   });
 
-exports.purchase = https.onCall(async (data, context) => {
+exports.exchange = https.onCall(async (data, context) => {
   if (!context.auth) {
     throw new https.HttpsError(
       'unauthenticated',
@@ -205,7 +204,7 @@ exports.purchase = https.onCall(async (data, context) => {
     );
   }
 
-  const { marketId, itemId, characterId } = data;
+  const { marketId, itemId, characterId, spend } = data;
 
   const character = await admin
     .firestore()
@@ -247,18 +246,21 @@ exports.purchase = https.onCall(async (data, context) => {
     throw new https.HttpsError('not-found', `Item ${itemId} not listed`);
   }
 
-  const available = parseInt(listing.available) || 0;
+  const amount = parseInt(listing.amount) || 0;
 
-  if (available < 1) {
-    throw new https.HttpsError('failed-precondition', 'Item is out of stock');
+  if (amount < 1) {
+    throw new https.HttpsError(
+      'failed-precondition',
+      spend ? 'Item is out of stock' : 'Item is no longer needed.'
+    );
   }
 
   // Check if character has enough money
-  const cost = parseInt(listing.cost || '0');
+  const value = parseInt(listing.value || 0);
   const { currencyId, name: marketName } = marketData;
   const balance = parseInt((characterData.balances || {})[currencyId] || 0);
 
-  if (balance < cost) {
+  if (balance < value) {
     throw new https.HttpsError('failed-precondition', 'Insufficient funds');
   }
 
@@ -266,23 +268,26 @@ exports.purchase = https.onCall(async (data, context) => {
   const transactionData = {
     characterId,
     currencyId,
-    amount: -cost,
+    amount: -value,
     createdAtEpoch: getTime(),
-    notes: `Purchased ${itemName} from ${marketName}`,
+    notes: spend
+      ? `Spent currency for ${itemName} at ${marketName}`
+      : `Offered ${itemName} to ${marketName} for currency`,
   };
 
   admin.firestore().collection('transactions').add(transactionData);
   // Update character's balance
   await character.ref.update({
-    [`balances.${currencyId}`]: balance - cost,
+    [`balances.${currencyId}`]: spend ? balance - value : balance + value,
   });
 
-  // Update market.listings available
+  // Update market.listings amount
   await market.ref.update({
-    [`listings.${itemId}.available`]: available - 1,
+    [`listings.${itemId}.amount`]: amount - 1,
   });
 
-  return success({ message: 'Purchase successful' });
+  const verb = spend ? 'Spending' : 'Offering';
+  return success({ message: `${verb} successful` });
 });
 
 exports.syncFiles = https.onCall(async (data, context) => {
