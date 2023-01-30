@@ -44,7 +44,13 @@ export const useSectionsStore = defineStore('sections', () => {
             groupSectionsByChapter(sections).map((chapters) => {
               return chapters.map((section) => {
                 if (section.type === SectionType.TrapType) {
-                  return trapsStore.itemsById.get(section.trapId).content;
+                  const trap = trapsStore.itemsById.get(section.trapId);
+                  if (!trap) {
+                    console.error('Trap not found', section);
+                    return 'Error: unknown trap. Speak to a GM.';
+                  }
+
+                  return trap.content;
                 }
 
                 return section.text;

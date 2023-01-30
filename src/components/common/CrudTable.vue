@@ -84,8 +84,17 @@ const paginationSettings = ref({
 });
 
 const onEdit = (row) => emit('edit', row);
-const onDelete = (row) => emit('delete', row);
+
+const onDelete = (row) => {
+  // Confirm before deleting.
+  const confirmed = confirm('Are you sure you want to delete?');
+  if (confirmed) {
+    emit('delete', row);
+  }
+};
+
 const onAdd = () => emit('add');
+
 const onExport = () => {
   const tableContents = props.rows.map((row) =>
     Object.fromEntries(

@@ -68,7 +68,7 @@ const props = defineProps({
   bookId: String,
 });
 
-const trapsById = inject<Map<string, Trap>>('trapsById');
+const trapsById = inject('trapsById');
 
 const trapNames = computed(() => {
   const traps = Array.from(trapsById.value?.values() || []);
@@ -78,7 +78,9 @@ const trapNames = computed(() => {
 
 const displayText = (section: Section) => {
   if (section.type == SectionType.TrapType) {
-    return trapsById.value.get(section.trapId).name;
+    const trap = trapsById?.value?.get(section.trapId);
+
+    return trap?.name || 'Unknown Trap';
   }
 
   return section.text;
