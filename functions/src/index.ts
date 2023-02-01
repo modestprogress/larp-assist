@@ -1,9 +1,10 @@
 import admin from 'firebase-admin';
 
-import { auth, https, firestore } from 'firebase-functions';
+import { auth, https, firestore, storage } from 'firebase-functions';
 import { Timestamp } from 'firebase-admin/firestore';
 
 import { info, warn } from 'firebase-functions/logger';
+
 
 admin.initializeApp();
 
@@ -290,26 +291,12 @@ exports.exchange = https.onCall(async (data, context) => {
   return success({ message: `${verb} successful` });
 });
 
-exports.syncFiles = https.onCall(async (data, context) => {
-  if (!context.auth) {
-    warn('Unauthenticated user called endpoint syncFiles');
-    throw new https.HttpsError(
-      'unauthenticated',
-      'The function must be called while authenticated.'
-    );
+exports.syncFileMetadata = storage.object().onFinalize(async (object) => {
+  const { name: path, bucket, mediaLink } = object;
+
+  if (!path?.startsWith('player-files/')) {
+    return
   }
-
-  // Start a batch of writes
-  const batch = admin.firestore().batch();
-
-  // Retrieve the default bucket
-  const bucket = admin.storage().bucket();
-
-  // Iterate over the files in the bucket and add their properties to firestore
-  const [files] = await bucket.getFiles({ prefix: 'player-files' });
-  files.forEach((file) => {
-    const { name, metadata } = file;
-    const path = name;
 
     const filename = path.split('/').pop();
     if (!filename) {
@@ -323,28 +310,15 @@ exports.syncFiles = https.onCall(async (data, context) => {
 
     const code = filenameParts.join('.');
 
-    // Remove the extension
-
-    const fileData = {
-      metadata,
-      path,
-      bucket: metadata.bucket,
-      url: metadata.mediaLink,
-      code: code,
-    };
-
     // We use the filename as the document Id to simplify syncing.
     const docId = filename;
-    const fileRef = admin.firestore().collection('files').doc(docId);
-
-    batch.set(fileRef, fileData, { merge: true });
-  });
-
-  // Commit the pending writes
-  await batch.commit();
-
-  return success({ message: 'Files synced' });
-});
+    await admin.firestore().collection('files').doc(docId).set({
+      path,
+      code,
+      bucket: bucket,
+      url: mediaLink
+    }, { merge: true })
+})
 
 exports.updateUser = https.onCall(async (data, context) => {
   if (!context.auth) {
